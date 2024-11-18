@@ -1,0 +1,7 @@
+DROP DATABASE IF EXISTS MockStock;
+CREATE DATABASE MockStock;
+use MockStock;
+
+DROP DATABASE IF EXISTS TestStock;
+CREATE DATABASE TestStock;
+use TestStock;

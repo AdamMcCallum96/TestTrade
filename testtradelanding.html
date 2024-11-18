@@ -1,0 +1,102 @@
+<html>
+
+
+<link rel='stylesheet' type='text/css' href='styles/landing.css'>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu%20Condensed">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+
+<body>
+
+    <div>
+
+
+        <img class="navImage" src=images/TestTrade.svg>
+        <div class="menuContainer">
+            
+            
+            
+            <div class="menuButton">
+                <p href="" class="menuText">Trade</p>
+                <!-- <div class="menuTab"></div> -->
+
+            </div>
+            <div class="menuButton">
+                <a href="" class="menuText">Summary</a>
+                <!-- <div class="menuTab"></div> -->
+
+            </div>
+            <div class="menuButton">
+                <a href=""class="menuText">Analytics</a>
+                <!-- <div class="menuTab"></div> -->
+
+            </div>
+            <div class="menuButton">
+                <a href="" class="menuText">Charts</a>
+                <!-- <div class="menuTab"></div> -->
+
+            </div>
+            <div class="menuButton">
+                <p class="menuText">Account</p>
+                <!-- <div class="menuTab"></div> -->
+
+            </div>
+            <div class="menuButton">
+                <p class="menuText">Settings</p>
+                <!-- <div class="menuTab"></div> -->
+
+            </div>
+
+        </div>
+        <div class="divider">
+
+        </div>
+        <div class="mainContent">
+            <script
+            src="https://code.jquery.com/jquery-3.7.0.js"
+           
+            integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+            crossorigin="anonymous"></script>
+            <div class="searchContainer">
+            <!-- <p>Search</p> -->
+            <input id='searchBar' name='searchBar' type="text" placeholder="Stock Search">
+            </div>
+            <script type="text/javascript">
+            $(document).ready(function() {
+                $("#searchBar").keyup(function() {
+                    // $(document).alert("lol");
+                    var search = $("#searchBar").val();
+                    console.log(search);
+                    
+                     const url = window.location.href.split('?')[0];
+                     console.log(url);
+                    $.post("inc/Utilities/Search.php", {
+                        search_Bar:search
+                        // previous_URL:url
+                    }, function(data, status){
+                        $("#result_box").html(data);
+                    });
+                    // $("#result_box").load('inc/Utilities/Search.php');
+                });
+            });
+            </script>   
+            <div class="divider"></div>
+            <div class="contentDivider">
+                <div class="leftPane"><p>LOL</p></div>
+                <div class="rightPane"><p>Okay whatr</p></div>
+            </div>
+            <div id='result_box'></div>
+    
+           
+            <!-- <input type="text" placeholder="Search"> -->
+        </div>
+
+    </div>
+
+
+
+</body>
+
+
+
+
+</html>
