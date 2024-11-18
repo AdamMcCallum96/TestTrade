@@ -1,0 +1,29 @@
+.graphFlexBox{
+
+    /* display:flex; */
+    margin: auto;
+    /* background-color:red; */
+}
+
+#stockgraph{
+    display: block;
+    background-color: darkgoldenrod;
+    color:darkgreen;
+    border-width: 10px;
+    border-style: solid;
+    border-color:black;
+    margin-left: auto;
+    margin-right: auto;
+}
+/* 
+.leftFlex{
+    width: 65%;
+    height: 50vh;
+    background-color:cyan;
+}
+
+.rightFlex{
+    width: 35%;
+    background-color:rgb(138, 138, 138);
+    height:fit-content;
+}  */

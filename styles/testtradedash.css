@@ -1,0 +1,122 @@
+/* .nav {
+    height: 100px;
+} */
+
+.navImage {
+    max-width: 20%;
+    
+}
+
+
+.buttonContainer{
+    width: 100%;
+    vertical-align: auto;
+    text-align: center;
+    /* background-color: darkblue; */
+    background-color: #0f4c64ff;
+    
+}
+
+.btnArea {
+    box-sizing: border-box;
+    max-width: 10%;
+    min-width: 10%;
+    /* border-style: solid;
+    border-width: 3px;
+    border-color: orange; */
+    float:left;
+}
+a {
+    /* background-color: green; */
+    /* margin: auto; */
+    /* margin-top: 40px; */
+}
+
+.singleButton {
+    color:darkgrey;
+    height: 90px;
+    line-height: 90px;
+    margin: auto;
+    vertical-align: middle;
+    font-family: 'Ubuntu Condensed';
+    font-size: 1.5em;
+    background: linear-gradient(#0f4c64ff,rgb(32, 112, 144));
+    border-style: solid;
+    border-width: 5px;
+    /* border-color:rgb(206, 206, 206); */
+    border-color: #2dd281ff;
+}
+
+
+.singleButton:hover{
+    background-color: darkcyan;
+    color:rgb(231, 73, 73);
+
+    
+}
+
+.tableArea {
+    box-sizing: border-box;
+    max-width: 90%;
+    min-width: 90%;
+    background-color: rgb(65, 99, 117);
+    /* background-color: #006ca8ff; */
+    border-style: solid;
+    border-width: 3px;
+    float: right;
+}
+
+.stockTableItem {
+    width: 20%;
+    /* border-style: solid; q
+    border-width: 3px;
+    border-color:sandybrown; */
+    color:rgb(230, 209, 209);
+    padding: 10px;
+    font-family: 'Montserrat'
+    
+}
+
+.stiCompany {
+    color:rgb(48, 224, 121);
+    font-size: 20px;
+    font-weight: 200;
+    
+}
+
+.stiGain{
+    color:rgb(36, 194, 44)
+}
+
+.stiLoss{
+    color:rgb(189, 38, 33)
+}
+
+
+
+.stockTableHeaderItem {
+
+}
+
+
+.stockTable {
+    width: 100%;
+    padding: 10px;
+    /* border-style: solid;
+    border-width: 10px; */
+    /* background-color: #006ca8ff; */
+    /* border-color:darkkhaki; */
+}
+.stockTableHeaderRow {
+
+}
+
+
+.stockTableRow {
+    background-color: green;
+    background-color:rgb(61, 74, 80);
+    height: 50px;
+    width: 100%;
+    border-style: solid;
+    border-width: 3px;
+}

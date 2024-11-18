@@ -1,0 +1,351 @@
+p {
+    color: blue;
+    font-size: 20px;
+    font-family: 'Montserrat'
+}
+
+h1 {
+    color: rgb(78, 62, 62);
+    font-family: 'Ubuntu Condensed';
+}
+
+body {
+    /* background-image: linear-gradient(180deg, white, white, black, blue); */
+    margin: 0px;
+    padding: 0px;
+    background-color:rgb(255, 255, 255);
+    
+}
+
+.navBarElements li {
+    display: inline-block;
+    max-width:100%;
+    
+    /* padding-right: 7%; */
+    /* padding-left: 7%; */
+    padding-top: 2%;
+    padding-bottom: 2%;
+    cursor: pointer;
+    margin-left: 3%;
+    margin-right: 3%;
+
+}  
+
+.navBarElements li a {
+    all: unset;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    /* font-size: 20px; */
+    /* font-size: 3%; */
+    /* font-size: 50px; */
+    color: rgb(27, 16, 78);
+}  
+
+@media only screen and (max-width: 1040px){
+    .navBarElements li a{
+        font-size: 1.7vw;
+    }
+}
+
+@media only screen and (min-width: 1040px){
+    .navBarElements li a{
+        font-size: 18px;
+    }
+}
+
+
+
+.navContainer {
+    margin-right: 0px;
+    border-style: solid;
+    border-width: 3px;
+    /* border-color: coral; */
+    border-color: rgb(255, 255, 255);
+    position: relative;
+    /* height: 100px; */
+    width: 100%;
+    color: green;
+    
+} 
+
+.navImg {
+    /* position: absolute; */
+    max-width: 30%;
+    width: 100%;
+    left: 0;
+}
+.navBar {
+    bottom: 0;
+    position: absolute;
+    right: 0;
+    width: 60%;
+    /* background-color:cornflowerblue; */
+    /* background-color: #006ca8ff; */
+    max-height: 40%;
+    
+}
+
+.navBarElements {
+    /* border-style: solid;
+    border-width: 4px;
+    border-top-left-radius: 25px; */
+    /* border-color: rgb(43, 160, 125); */
+    /* border-color: rgb(0, 0, 0);
+    list-style-type: none;
+    background-color: #006ca8ff; */
+    /* background-color:chartreuse; */
+    margin: 0;
+    text-align: center;
+}
+
+.shell {
+    /* display: block; */
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    /* background-color: rgb(248, 19, 19); */
+}
+
+.mainContent {
+    overflow: auto;
+    /* column-count: 2; */
+    border-style: solid;
+    border-width: 6px;
+    border-top-left-radius: 25px;
+    background-color: #006ca8ff;
+    /* border-color: rgb(0, 0, 0); */
+    border-color: #2dd281ff;
+    width: 100%;
+    height: 100%;
+    /* display: inline-block; */
+}
+
+.descText {
+    
+    /* display:inline-table; */
+    min-height: 100%;
+    margin-top: 25px;
+    width: 43%;
+    margin: 1%;
+    background-color: rgb(12, 36, 49);
+    /* background-color: rgb(149, 200, 228); */
+    padding: 2%;
+    border-style: solid;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    border-color: blue;
+    border-width: 5px;
+}
+
+.left { float: left; }
+.right { float: right; }
+
+
+.signUpInput {
+    background-color: rgb(166, 237, 100);
+    color: rgb(48, 206, 48);
+}
+
+
+#contentContainer {
+    display: block;
+    width: 95%;
+    background-color:rgb(15, 61, 114);
+    background-image: conic-gradient(rgb(15, 61, 114),black,rgb(15, 61, 114));
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 80vh;
+    
+}
+
+#contentGradient {
+    background-image: linear-gradient(#0f4c64ff, rgb(15, 61, 114),rgb(3, 10, 19));
+    /* background-image: conic-gradient(#0f4c64ff, rgb(15, 61, 114),black,black,black,rgb(15, 61, 114),#0f4c64ff); */
+    width: 100%;
+}
+#signUpContainer {
+    margin: 0px;
+    margin-right: auto;
+    margin-left: auto;
+    width: 30%;
+    background-color:rgb(129, 129, 129);
+    padding: 30px;
+    max-width: 30%;
+
+}
+
+
+.signUpItemContainer {
+    display: block;
+}
+.signUpTitleContainer {
+    width: 80%;
+    margin-right: auto;
+    margin-left: auto;
+    text-align:center;
+    background-color: rgb(236, 236, 236);
+    max-width: 80%;
+    overflow-wrap: break-word;
+}
+
+.signUpTitleText {
+    text-align:center;
+    color: black;
+    font-size: 20px;
+    display: inline-block;
+    font-weight: 600;
+    /* background-color:greenyellow; */
+    /* margin-top: 5px; */
+}
+
+
+.signUpTitleTextVar {
+    text-align:center;
+    color: black;
+    font-size: 20px;
+    /* background-color: hotpink; */
+
+    /* height: 35px; */
+    /* display: inline-block; */
+    font-weight: 600;
+    text-overflow: ellipsis;
+    /* background-color: green; */
+    margin-top: auto;
+    margin-bottom: auto;
+    min-height: 35px;
+}
+
+.accountNameStyle {
+    color:teal;
+    font-weight: 400;
+    font-family: 'Outfit';
+    display: block;
+}
+.underline {
+    text-decoration: underline;
+}
+
+.signUpTitleBold {
+    font-size: 25px;
+    font-weight: bold;
+    font-family: 'Ubuntu Condensed';
+    color: #006ca8ff;
+    /* margin-left: 3px; */
+}
+
+.signUpText {
+    margin-right: auto;
+    margin-left: auto;
+    width: 80%;
+    margin-bottom: 2px;
+    color: #006ca8ff;
+    font-family: "Ubuntu Condensed";
+
+}
+.signUpError {
+    margin-right: auto;
+    margin-left: auto;
+    width: 80%;
+    margin-bottom: 2px;
+    color: rgb(0, 54, 153);
+    font-family: "Ubuntu Condensed";
+    text-align: center;
+}
+
+.signUpItems {
+    padding-left: 10px;
+    padding-right: 10px;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    color:rgb(0, 0, 0);
+    background-color: rgb(255, 255, 255);
+    width: 80%;
+    height: 30px;
+    border-radius: 6px;
+    border: solid;
+    border-width: 3px;
+    border-color:rgb(129, 129, 129);
+    font-size: 15px;
+    font-family: 'Montserrat';
+    font-weight: bold;
+    outline: none;
+   
+}
+
+.signUpItems:hover {
+    border-color: #006ca8ff;
+    outline: none;
+}
+
+.signUpItems:focus {
+    border-color: rgb(0, 72, 155);
+    outline: none;
+
+}
+
+.signUpErrorText {
+    color: rgb(141, 33, 33);
+    color: rgb(190, 22, 22);
+    font-size:16px;
+    font-family:Arial;
+}
+
+
+
+.separator {
+    display: block;
+    width: 100%;
+    height: 50px;
+    color: #0f4c64ff;
+    background-color: #0f4c64ff;
+}
+
+.footerSeparator {
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    height: 50px;
+    background-color: rgb(3, 10, 19);
+    /* margin-top: 0px;
+    padding-top: 0px; */
+}
+
+.signUpButton {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    margin-top: 15px;
+    height: 40px;
+    font-style: "Ubuntu Condensed";
+    font-size: 20px;
+    border-radius: 5px;
+    color: white;
+    /* background-color:  #0f4c64ff; */
+    background-color: #006ca8ff;
+    border-color: #006ca8ff;
+    border-style: solid;
+    /* background-color: black; */
+}
+
+.signUpButton:hover {
+    border-color: rgb(0, 140, 216);
+    
+}
+
+.signUpButton:focus {
+    border-color: #006ca8ff;
+    background-color: rgb(0, 85, 131);
+}
+
+form {
+    color: blue;
+    margin: 0px;
+    padding: 0px;
+}
+
+.contentGradient, .footerSeparator {
+    /* margin: 0; */
+}
+
