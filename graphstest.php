@@ -15,8 +15,9 @@ $data = array();
 
 //var_dump($lol)
 StockDailyDAO::initialize();
-
-$stockIDArray = array("CGX.TRT","TSLA");
+$stockIDArray = array("TSLA");
+// $stockIDArray = array("CGX.TRT");
+//$stockIDArray = array("CGX.TRT","TSLA");
 
 for($i = 0; $i < count($stockIDArray); $i++){
 
@@ -41,13 +42,14 @@ for($x = 0; $x < count($data); $x ++){
 
 $colours = ["#FF0000",'#008800',"#0000FF"];
 //$colours = ["#FF0000",'#00800',"#0000FF"];
-$gp = new GraphPage($data, $dates, $colours);
+$gp = new GraphPage($data, $dates,$colours, "default","graphid1");
 
 
 PageFunctionality::nav();
 // var_dump($gp->getData());
 $gp->displayGraph();
-
+// $gl = new GraphPage($data, $dates, $colours, "slider","graphid2");
+// $gl->displayGraph();
 
 //var_dump($data);
 var_dump(json_encode($data));

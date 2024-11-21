@@ -29,24 +29,41 @@ class Graph {
         this.graphMarginRight = 0.2 //Extra room for legend
         this.graphMarginTop = 0.1
         this.graphMarginBottom = 0.1
+        this.graphMarginType = "default"
     }
+    //smaller constructors/settings
+    setMarginsLRTBS(left, right, top, bottom, settings){
+        
+        if(settings == "percentile"){
+             this.bottomOffset = bottom * this.canvasHeight;
+             this.topOffset = top * this.canvasHeight;
+             this.leftOffset = left * this.canvasWidth;
+             this.rightOffset = right * this.canvasWidth;
+        }
+        if(settings == "pixel"){
+             this.bottomOffset = bottom;
+             this.topOffset = top;
+             this.leftOffset = left;
+             this.rightOffset = right;
+        }
 
-    init(){
 
+
+        
     }
 
 
     calculateGraph(startDate, endDate, type){
         
-        var tempData = this.data
+        this.tempData = this.data
 
         console.log(this.data);
         //Slice the data based on the users request dates
-        tempData = this.sliceByDate(tempData, startDate, endDate);
-        let tempTimeline = this.getTempTimeline();
+        this.tempData = this.sliceByDate(this.tempData, startDate, endDate);
+        this.tempTimeline = this.getTempTimeline();
         
-        var max = this.getMaxData(tempData);
-        var min = this.getMinData(tempData)
+        var max = this.getMaxData(this.tempData);
+        var min = this.getMinData(this.tempData)
 
         var difference = max-min;
        
@@ -143,201 +160,118 @@ class Graph {
                 currentPercentChange = this.percentChange[i];
             }
        }
-
-       console.log("Data for final result");
-       console.log(this.validGraphMax);
-       console.log(this.validGraphBottom);
-       console.log(this.validYScale);
-       console.log(this.percentChange);
-       console.log("Final Result");
-       console.log(this.graphMax);
-       console.log(this.graphBottom);
-       console.log(this.graphYScale);
-       console.log(currentPercentChange);
-       console.log(tempData);
-
-
        
-       var tempDataCursors = [];
-       var tempDataMaxLengths = [];
-       var previousYCoord = [];
-       var previousXCoord = [];
-       for(let x = 0; x < tempData.length; x++){
-           tempDataCursors[x] = 0;
-           tempDataMaxLengths[x] = tempData[x].length;
-           console.log(tempData.length);
-           console.log("temp length");
-           console.log(tempDataMaxLengths[x]);
+        this.tempDataCursors = [];
+        this.tempDataMaxLengths = [];
+        this.previousYCoord = [];
+        this.previousXCoord = [];
+       for(let x = 0; x < this.tempData.length; x++){
+           this.tempDataCursors[x] = 0;
+           this.tempDataMaxLengths[x] = this.tempData[x].length;
+           
        }
-
+       return;
        
        var canvas = this.canvas.getContext('2d');
        canvas.reset();
        canvas.beginPath();
        canvas.moveTo(0,0);
        canvas.strokeStyle = "green";
-       console.log(this.canvas.height);
-       console.log(this.canvas.width);
-       console.log(tempDataCursors);
-       console.log("timeline");
-       console.log(this.timeline);
-       console.log("temptimeline");
-       console.log(tempTimeline);
-
-        this.graphMarginLeft = 0.1 
-        this.graphMarginRight = 0.2 //Extra room for legend
-        this.graphMarginTop = 0.1
-        this.graphMarginBottom = 0.1
-
-        let bottomOffset = this.graphMarginBottom * this.canvasHeight;
-        let topOffset = this.graphMarginTop * this.canvasHeight;
-        let leftOffset = this.graphMarginLeft * this.canvasWidth;
-        let rightOffset = this.graphMarginRight * this.canvasWidth;
-
-        let coordYBottom = this.canvasHeight - bottomOffset;
-        let coordYTop = topOffset;
-        let coordXLeft = leftOffset;
-        let coordXRight = this.canvasWidth - rightOffset
-        let actualHeight = coordYBottom - coordYTop
-        let actualWidth = coordXRight - coordXLeft
-       //Draw Bounds
-       canvas.moveTo(coordXLeft, coordYTop);
-       canvas.lineTo(coordXLeft, coordYBottom);
-       canvas.lineTo(coordXRight, coordYBottom);
-       canvas.lineWidth = 3;
-       canvas.strokeStyle = "black";
-       canvas.stroke();
-       canvas.lineWidth = 2;
-       let labels = this.getTimeLabels(tempData, tempTimeline)
-       //Labels array contains [[stockDate:'date', displayText: '2011']]
-
-       //Draw XTimeLabels
-       let n = 0;
        
-       for(let i = 0; i < tempTimeline.length; i++){
-        
-            //console.log(labels[0]['stockDate']);
-            
-           
-            if(n != labels.length){
-                let tDate = new Date(tempTimeline[i]['stockDate'])
-                let labelDate = new Date(labels[n]['stockDate'])
-                if(labelDate <= tDate){
-                    console.log("N: "+ n);
-                
-                //DRAW THE LABEL LINE AND TEXT
-                let labelX = ((i) / (tempTimeline.length - 1) * actualWidth) + coordXLeft;
-                //
-                let labelYText = coordYBottom + (0.6 * bottomOffset);
-                canvas.textAlign = "center";
-                //let font = labelYLineLength.toString()+"px serif"
-                let number = parseInt(0.35   * bottomOffset);
-                let font = number.toString()+"px serif"
-                canvas.font = font;
-                canvas.fillText(labels[n]['displayText'],labelX,labelYText)
-                console.log("BOTTOM OFFSET: "+ (coordYBottom +(0.5 * bottomOffset)));
-                console.log(coordYBottom);
-                console.log(labelX);
-                console.log(labelYText);
-                
-                let labelYLineLength = coordYBottom + (0.25 * bottomOffset);
-                canvas.moveTo(labelX, coordYBottom);
-                canvas.lineTo(labelX, labelYLineLength);
-                canvas.stroke();
-                n+=1
-                }
-                
-            }
-    
-       }
+
+        // this.graphMarginLeft = 0.1 
+        // this.graphMarginRight = 0.2 
+        // this.graphMarginTop = 0.1
+        // this.graphMarginBottom = 0.1
+
+        this.bottomOffset = this.graphMarginBottom * this.canvasHeight;
+        this.topOffset = this.graphMarginTop * this.canvasHeight;
+        this.leftOffset = this.graphMarginLeft * this.canvasWidth;
+        this.rightOffset = this.graphMarginRight * this.canvasWidth;
+
+        this.coordYBottom = this.canvasHeight - this.bottomOffset;
+        this.coordYTop = this.topOffset;
+        this.coordXLeft = this.leftOffset;
+        this.coordXRight = this.canvasWidth - this.rightOffset
+        this.actualHeight = this.coordYBottom - this.coordYTop
+        this.actualWidth = this.coordXRight - this.coordXLeft
+        this.labelLineLength = 0.25 * this.bottomOffset
+       //Draw Bounds
+       
+       canvas.lineWidth = 2;
+ 
 
        //DRAW Legend
-       canvas.moveTo(coordXRight, coordYTop)
+       canvas.moveTo(this.coordXRight, this.coordYTop)
        canvas.stroke();
        canvas.beginPath();
        let legendYPixels = 0;
-       for(let i = 0; i < tempData.length; i++) {
+       for(let i = 0; i < this.tempData.length; i++) {
 
         //in theory we can have a max of ten things in our graph with this
-        legendYPixels += (actualHeight / 10);
-        let height = legendYPixels + coordYTop;
-        let legendXBox = coordXRight + (rightOffset / 10)
+        legendYPixels += (this.actualHeight / 10);
+        let height = legendYPixels + this.coordYTop;
+        let legendXBox = this.coordXRight + (this.rightOffset / 10)
         canvas.beginPath();
         canvas.fillStyle = this.colours[i]
         let boxWidth = 20;
         canvas.rect(legendXBox, height, boxWidth, 20);
-        console.log("COLOURS");
-        console.log(this.colours[i]);
+    
         
         canvas.fill();
         canvas.closePath()
-        console.log(tempData)
+        
         canvas.beginPath()
-        let number = parseInt(0.35   * bottomOffset);
+        let number = parseInt(0.35   * this.bottomOffset);
         let font = number.toString()+"px serif"
         canvas.font = font;
         canvas.textAlign = "left";
         canvas.fillStyle = "black"
-        canvas.fillText(tempData[i][0]['stockID'], (legendXBox +( boxWidth *2)),height + boxWidth -5);
+        canvas.fillText(this.tempData[i][0]['stockID'], (legendXBox +( boxWidth *2)),height + boxWidth -5);
         
         canvas.stroke();
         canvas.closePath()
        }
        console.log("Temp timeline 9999")
-       console.log(tempTimeline);
-       for(let i = 0; i < tempTimeline.length; i++){
+       console.log(this.tempTimeline);
+       for(let i = 0; i < this.tempTimeline.length; i++){
            
             //Draw Data
-            for(let x = 0; x < tempData.length; x++){
+            for(let x = 0; x < this.tempData.length; x++){
 
                 // console.log(x);
-                let stockArray = tempData[x]
+                let stockArray = this.tempData[x]
+            
                 
-                
-                // console.log(stockArray.length);
-                // console.log(tempDataCursors[x]);
-                // console.log("I#: "+i);
-                // console.log("Datacursor #"+x+" "+ tempDataCursors[x]);
-                // console.log("timeline: "+ this.timeline[i]['stockDate']);
-                // console.log("stockarray: " + stockArray[tempDataCursors[x]]['stockDate']);
-                
-                if(tempDataCursors[x] < tempDataMaxLengths[x] && tempTimeline[i]['stockDate'] == stockArray[tempDataCursors[x]]['stockDate']){
+                if(this.tempDataCursors[x] < this.tempDataMaxLengths[x] && this.tempTimeline[i]['stockDate'] == stockArray[this.tempDataCursors[x]]['stockDate']){
                     
-                    let value = stockArray[tempDataCursors[x]]['stockValue'];
+                    let value = stockArray[this.tempDataCursors[x]]['stockValue'];
                     
                     value = value - this.graphBottom
                     
                     value = value / (this.graphMax - this.graphBottom);
-                    //let ycoord = (1 - value)* t;
-                //    let ycoord = (1 - value)* this.canvas.height;
-                //    let xcoord = ((i+1) / tempTimeline.length * this.canvas.width);
+              
                     
-                    let ycoord = ((1 - value)* actualHeight) + coordYTop;
+                    let ycoord = ((1 - value)* this.actualHeight) + this.coordYTop;
 
                     //subtract 1 from temp timeline because it is zero based
-                    let xcoord = ((i) / (tempTimeline.length - 1) * actualWidth) + coordXLeft;
+                    let xcoord = ((i) / (this.tempTimeline.length - 1) * this.actualWidth) + this.coordXLeft;
                      
-                //    console.log(actualWidth);
-                   //modify the coordinates according to the graph
-                   
-                   
-                   
-                // console.log("x: "+ xcoord + "y: "+ycoord);
                 canvas.beginPath()
-                if(previousYCoord[x] == undefined && previousXCoord[x] == undefined){
+                if(this.previousYCoord[x] == undefined && this.previousXCoord[x] == undefined){
                     canvas.moveTo(xcoord, ycoord);
                 } else {
-                    canvas.moveTo(previousXCoord[x],previousYCoord[x]);
+                    canvas.moveTo(this.previousXCoord[x],this.previousYCoord[x]);
                 }
                     
-                   previousYCoord[x] = ycoord;
-                   previousXCoord[x] = xcoord;
+                   this.previousYCoord[x] = ycoord;
+                   this.previousXCoord[x] = xcoord;
                    canvas.strokeStyle = colours[x]
                    canvas.lineTo(xcoord,ycoord);
                    canvas.stroke()
                    
-                    tempDataCursors[x] = tempDataCursors[x] + 1;
-                    // console.log(tempDataCursors);
+                    this.tempDataCursors[x] = this.tempDataCursors[x] + 1;
+                    // console.log(this.tempDataCursors);
                 } else {
 
                 }
@@ -345,11 +279,109 @@ class Graph {
             if(this.timeline[i] == "lol"){
 
            }
+
+            
        }
 
        canvas.stroke();
+       //X/Y AXIS
+        canvas.beginPath()
+        canvas.moveTo(this.coordXLeft, this.coordYTop);
+        canvas.lineTo(this.coordXLeft, this.coordYBottom);
+        canvas.lineTo(this.coordXRight, this.coordYBottom);
+        canvas.lineWidth = 3;
+        canvas.strokeStyle = "black";
+        canvas.stroke();
+
+        let labels = this.getTimeLabels(this.tempData, this.tempTimeline)
+        //Labels array contains [[stockDate:'date', displayText: '2011']]
+ 
+        //Draw XTimeLabels
+        let n = 0;
+        
+        for(let i = 0; i < this.tempTimeline.length; i++){
+         
+             //console.log(labels[0]['stockDate']);
+             
+            
+             if(n != labels.length){
+                 let tDate = new Date(this.tempTimeline[i]['stockDate'])
+                 let labelDate = new Date(labels[n]['stockDate'])
+                 if(labelDate <= tDate){
+                     console.log("N: "+ n);
+                 
+                 //DRAW THE LABEL LINE AND TEXT
+                 let labelX = ((i) / (this.tempTimeline.length - 1) * this.actualWidth) + this.coordXLeft;
+                 //
+                 let labelYText = this.coordYBottom + (0.6 * this.bottomOffset);
+                 canvas.textAlign = "center";
+                 //let font = labelYLineLength.toString()+"px serif"
+                 let number = parseInt(0.35   * this.bottomOffset);
+                 let font = number.toString()+"px serif"
+                 canvas.font = font;
+                 canvas.fillText(labels[n]['displayText'],labelX,labelYText)
+                 
+                 
+                 let labelYLineLength = this.coordYBottom + this.labelLineLength;
+                 canvas.moveTo(labelX, this.coordYBottom);
+                 canvas.lineTo(labelX, labelYLineLength);
+                 canvas.stroke();
+                 n+=1
+                 }
+                 
+             }
+     
+        }
+
+        //Draw Y Labels
+        let currentYValue = this.graphBottom
+        console.log("BOTTOM");
+        console.log("");
+
+        console.log(typeof(this.graphYScale));
+        console.log(this.graphYScale.toString())
+        let intDifference = this.graphYScale.toString().length - Math.floor(this.graphYScale).toString().length;
+        let intMultiplier = 10 * intDifference;
+        while(currentYValue <= this.graphMax){
+            //Percent of total graph
+            
+            console.log("BOTTOM:" +this.graphBottom)
+            console.log("YVALUE: " + currentYValue );
+            console.log("YSCALE: " + this.graphYScale);
+            console.log("my CALC: "+ (2.2 + 0.2) )
+            currentYValue = Math.floor(currentYValue * intMultiplier) / intMultiplier;
 
 
+            let value = currentYValue - this.graphBottom
+                    
+            value = value / (this.graphMax - this.graphBottom);
+            //value = this.graphBottom / (this.graphMax - this.graphBottom);
+            
+            let ycoord = ((1 - value)* this.actualHeight) + this.coordYTop;
+            canvas.moveTo(this.coordXLeft, ycoord);
+            //lineWidth =
+            canvas.lineTo(this.coordXLeft - this.labelLineLength, ycoord);
+
+            let number = parseInt(0.35   * this.bottomOffset);
+                 let font = number.toString()+"px serif"
+                 canvas.font = font;
+            let labelDistance = 0.6 * this.bottomOffset;
+            //console.log(this.coordXLeft - labelYText);
+            canvas.textBaseline= "middle";
+            canvas.fillText(currentYValue, this.coordXLeft - labelDistance,ycoord)
+            canvas.stroke()
+
+
+            currentYValue += this.graphYScale;
+            console.log("CURRENY Y VALUE=" + currentYValue);
+        }
+
+        canvas.moveTo(this.coordXLeft - this.labelLineLength, this.coordYTop)
+        canvas.lineTo(this.coordXLeft, this.coordYTop);
+        canvas.lineTo(this.coordXLeft, this.coordYBottom );
+        canvas.stroke();
+    
+        
 
 
 
@@ -358,10 +390,232 @@ class Graph {
         
     }
 
-    getTimeLabels(tempData, tempTimeline){
+    initializeDisplay(){
+        var canvas = this.canvas.getContext('2d');
+        canvas.reset();
+        canvas.beginPath();
+        canvas.moveTo(0,0);
+        this.coordYBottom = this.canvasHeight - this.bottomOffset;
+        this.coordYTop = this.topOffset;
+        this.coordXLeft = this.leftOffset;
+        this.coordXRight = this.canvasWidth - this.rightOffset
+        this.actualHeight = this.coordYBottom - this.coordYTop
+        console.log("BOTTOM:" +this.coordYBottom);
+        console.log("TOP:" +this.coordYTop);
+        console.log("TOPLOL");
+        console.log(this.bottomOffset);
+        console.log(this.canvasHeight);
+        this.actualWidth = this.coordXRight - this.coordXLeft
+        this.labelLineLength = 0.25 * this.bottomOffset
+
+    }
+
+    displayLegend(canvas){
+          //DRAW Legend
+       canvas.moveTo(this.coordXRight, this.coordYTop)
+       canvas.stroke();
+       canvas.beginPath();
+       let legendYPixels = 0;
+       for(let i = 0; i < this.tempData.length; i++) {
+
+        //in theory we can have a max of ten things in our graph with this
+        legendYPixels += (this.actualHeight / 10);
+        let height = legendYPixels + this.coordYTop;
+        let legendXBox = this.coordXRight + (this.rightOffset / 10)
+        canvas.beginPath();
+        canvas.fillStyle = this.colours[i]
+        let boxWidth = 20;
+        canvas.rect(legendXBox, height, boxWidth, 20);
+    
+        
+        canvas.fill();
+        canvas.closePath()
+        console.log("EVERTHING OKAY");
+        console.log(this.tempData);
+        canvas.beginPath()
+        let number = parseInt(0.35   * this.bottomOffset);
+        let font = number.toString()+"px serif"
+        canvas.font = font;
+        canvas.textAlign = "left";
+        canvas.fillStyle = "black"
+        canvas.fillText(this.tempData[i][0]['stockID'], (legendXBox +( boxWidth *2)),height + boxWidth -5);
+        
+        canvas.stroke();
+        canvas.closePath()
+       }
+       console.log("Temp timeline 9999")
+      //console.log(this.tempTimeline);
+       
+
+
+    }
+
+    displayData(canvas){
+        for(let i = 0; i < this.tempTimeline.length; i++){
+           
+            //Draw Data
+            for(let x = 0; x < this.tempData.length; x++){
+
+                // console.log(x);
+                let stockArray = this.tempData[x]
+            
+                
+                if(this.tempDataCursors[x] < this.tempDataMaxLengths[x] && this.tempTimeline[i]['stockDate'] == stockArray[this.tempDataCursors[x]]['stockDate']){
+                    
+                    let value = stockArray[this.tempDataCursors[x]]['stockValue'];
+                    
+                    value = value - this.graphBottom
+                    
+                    value = value / (this.graphMax - this.graphBottom);
+              
+                    console.log(value);
+                    console.log(this.graphMax);
+                    console.log(this.graphBottom);
+                    console.log(this.actualHeight);
+                    console.log(this.coordYTop);
+                    let ycoord = ((1 - value)* this.actualHeight) + this.coordYTop;
+
+                    //subtract 1 from temp timeline because it is zero based
+                    let xcoord = ((i) / (this.tempTimeline.length - 1) * this.actualWidth) + this.coordXLeft;
+                     
+                canvas.beginPath()
+                if(this.previousYCoord[x] == undefined && this.previousXCoord[x] == undefined){
+                    canvas.moveTo(xcoord, ycoord);
+                    console.log(xcoord + " " +ycoord)
+                } else {
+                    canvas.moveTo(this.previousXCoord[x],this.previousYCoord[x]);
+                    console.log(xcoord + " " +ycoord)
+                }
+                    
+                   this.previousYCoord[x] = ycoord;
+                   this.previousXCoord[x] = xcoord;
+                   canvas.strokeStyle = this.colours[x]
+                   canvas.lineTo(xcoord,ycoord);
+                   canvas.stroke()
+                   
+                    this.tempDataCursors[x] = this.tempDataCursors[x] + 1;
+                    // console.log(this.tempDataCursors);
+                } else {
+
+                }
+            }
+            if(this.timeline[i] == "lol"){
+
+           }
+
+            
+       }
+    }
+
+    displayAxis(canvas){
+        canvas.stroke();
+        //X/Y AXIS
+         canvas.beginPath()
+         canvas.moveTo(this.coordXLeft, this.coordYTop);
+         canvas.lineTo(this.coordXLeft, this.coordYBottom);
+         canvas.lineTo(this.coordXRight, this.coordYBottom);
+         canvas.lineWidth = 3;
+         canvas.strokeStyle = "black";
+         canvas.stroke();
+    }
+
+    displayXLabels(canvas){
+        let labels = this.getTimeLabels(this.tempData, this.tempTimeline)
+        //Labels array contains [[stockDate:'date', displayText: '2011']]
+ 
+        //Draw XTimeLabels
+        let n = 0;
+        
+        for(let i = 0; i < this.tempTimeline.length; i++){
+         
+             //console.log(labels[0]['stockDate']);
+             
+            
+             if(n != labels.length){
+                 let tDate = new Date(this.tempTimeline[i]['stockDate'])
+                 let labelDate = new Date(labels[n]['stockDate'])
+                 if(labelDate <= tDate){
+                     console.log("N: "+ n);
+                 
+                 //DRAW THE LABEL LINE AND TEXT
+                 let labelX = ((i) / (this.tempTimeline.length - 1) * this.actualWidth) + this.coordXLeft;
+                 //
+                 let labelYText = this.coordYBottom + (0.6 * this.bottomOffset);
+                 canvas.textAlign = "center";
+                 //let font = labelYLineLength.toString()+"px serif"
+                 let number = parseInt(0.35   * this.bottomOffset);
+                 let font = number.toString()+"px serif"
+                 canvas.font = font;
+                 canvas.fillText(labels[n]['displayText'],labelX,labelYText)
+                 
+                 
+                 let labelYLineLength = this.coordYBottom + this.labelLineLength;
+                 canvas.moveTo(labelX, this.coordYBottom);
+                 canvas.lineTo(labelX, labelYLineLength);
+                 canvas.stroke();
+                 n+=1
+                 }
+                 
+             }
+     
+        }
+
+    }
+
+    displayYLabels(canvas){
+        let currentYValue = this.graphBottom
+        console.log("BOTTOM");
+        console.log("");
+
+        console.log(typeof(this.graphYScale));
+        console.log(this.graphYScale.toString())
+        let intDifference = this.graphYScale.toString().length - Math.floor(this.graphYScale).toString().length;
+        let intMultiplier = 10 * intDifference;
+        while(currentYValue <= this.graphMax){
+            //Percent of total graph
+            
+            console.log("BOTTOM:" +this.graphBottom)
+            console.log("YVALUE: " + currentYValue );
+            console.log("YSCALE: " + this.graphYScale);
+            console.log("my CALC: "+ (2.2 + 0.2) )
+            currentYValue = Math.floor(currentYValue * intMultiplier) / intMultiplier;
+
+
+            let value = currentYValue - this.graphBottom
+                    
+            value = value / (this.graphMax - this.graphBottom);
+            //value = this.graphBottom / (this.graphMax - this.graphBottom);
+            
+            let ycoord = ((1 - value)* this.actualHeight) + this.coordYTop;
+            canvas.moveTo(this.coordXLeft, ycoord);
+            //lineWidth =
+            canvas.lineTo(this.coordXLeft - this.labelLineLength, ycoord);
+
+            let number = parseInt(0.35   * this.bottomOffset);
+                 let font = number.toString()+"px serif"
+                 canvas.font = font;
+            let labelDistance = 0.6 * this.bottomOffset;
+            //console.log(this.coordXLeft - labelYText);
+            canvas.textBaseline= "middle";
+            canvas.fillText(currentYValue, this.coordXLeft - labelDistance,ycoord)
+            canvas.stroke()
+
+
+            currentYValue += this.graphYScale;
+            console.log("CURRENY Y VALUE=" + currentYValue);
+        }
+
+        canvas.moveTo(this.coordXLeft - this.labelLineLength, this.coordYTop)
+        canvas.lineTo(this.coordXLeft, this.coordYTop);
+        canvas.lineTo(this.coordXLeft, this.coordYBottom );
+        canvas.stroke();
+    }
+
+    getTimeLabels(tempTimeline){
+        
         //Length rules
-        var startDate = new Date(tempTimeline[0]['stockDate']);
-        var endDate = new Date(tempTimeline[tempTimeline.length - 1]['stockDate']);
+        var startDate = new Date(this.tempTimeline[0]['stockDate']);
+        var endDate = new Date(this.tempTimeline[this.tempTimeline.length - 1]['stockDate']);
         // var startDate = new Date('2009-01-25');
         // var endDate = new Date('2009-08-25');
         
@@ -373,11 +627,11 @@ class Graph {
         let currentFunction = "";
         let period = 0;
         let dayLengthPeriods =[]
-        tempTimeline.length / 6
+        this.tempTimeline.length / 6
         if(yearsDifference == 0 && monthDifference < 3){
             console.log("hit GET DATE")
             currentFunction = "getDate";
-            let days = tempTimeline.length
+            let days = this.tempTimeline.length
             let testNum = 1;
             while(testNum <= 6){
                 dayLengthPeriods[testNum - 1] =  parseInt(days/testNum)      //Lets say we don't want the 24/8 = 2
@@ -453,13 +707,13 @@ class Graph {
         }
 
         let result = 0;
-        //let startDate = new Date(tempTimeline[z]['stockDate']);
+        //let startDate = new Date(this.tempTimeline[z]['stockDate']);
         let testDate = startDate
         //let testDate = Object.create(startDate);
         // let testDate = JSON.parse(JSON.stringify(startDate));
         console.log("TESTDATE")
         console.log(testDate);
-        console.log(tempTimeline[0]['stockDate']);
+        console.log(this.tempTimeline[0]['stockDate']);
         console.log("PERIOD: "+ period);
         console.log("CURRENT FUNCTION: " + currentFunction);
         result = testDate[currentFunction]()
@@ -471,7 +725,7 @@ class Graph {
         let periodCounter = 0;
         if(currentFunction == "getDate") {
             //we automatically cut out the last day and the first day so there's no graph overlap
-            for(let k = 1; k <  tempTimeline.length -1 ; k++){
+            for(let k = 1; k <  this.tempTimeline.length -1 ; k++){
                 console.log("GET DAYS");
                 console.log(period);
                 periodCounter += 1; 
@@ -479,10 +733,10 @@ class Graph {
                 if(periodCounter == period){
                     
                     //space needed after stockdate to convert to UTC (weird JS gimmick)
-                    let currentDay = new Date((tempTimeline[k]['stockDate'] + " "))
+                    let currentDay = new Date((this.tempTimeline[k]['stockDate'] + " "))
                     let months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Nov","Dec"]
                     let array = [];
-                    array['stockDate'] = tempTimeline[k]['stockDate']
+                    array['stockDate'] = this.tempTimeline[k]['stockDate']
                     array['displayText'] = months[currentDay.getMonth()] + " " + currentDay.getDate();
                     periodCounter = 0;
                     dateResults.push(array);
@@ -526,12 +780,30 @@ class Graph {
             // console.log(endDate);
             console.log(iteratorDate >= startDate);
             console.log(iteratorDate <= endDate);
+            //time between start and end date
+            let dateDifference = endDate.valueOf() - startDate.valueOf()
             while(iteratorDate >= startDate && iteratorDate <= endDate){
-            
+                
+                let iDifference = endDate.valueOf() - iteratorDate.valueOf();
+                //At the start of the loop the difference should be 
+                // 1:1
+                //by the end it will be close to
+                //0:1
+                console.log("IDIF: "+ iDifference);
+                console.log("DDIF: " + dateDifference)
+                console.log("DIVISION: " + iDifference/dateDifference);
+                //The number was chosing by the  iDifference/dateDifference
+                //To ensure that the graph does not display x axis labels
+                //after the last 3.4% of the graph
+                if(dateDifference * 0.034 >= iDifference){
+                    
+                    
+                    break;
+                }
                 let key = iteratorDate.getFullYear()
                 let array = [];
                 array['stockDate'] = iteratorDate.toISOString().substring(0, 10);
-                array['displayText'] = iteratorDate.toLocaleString('default', { month: 'long' });
+                array['displayText'] = (iteratorDate.toLocaleString('default', { month: 'short' })+ " " + iteratorDate.getFullYear());
                 dateResults.push(array);    
                 numberOfLabels = numberOfLabels + 1
                 iteratorDate = iteratorDate.setMonth(iteratorDate.getMonth() + period);
@@ -539,13 +811,11 @@ class Graph {
 
             }
         }
-        // console.log("DATE RESULTS");
-        // console.log("START" + startDate);
-        // console.log("end" + endDate);
+        
         console.log("Period: "+period);
         console.log("Date Results");
         console.log(dateResults);
-        console.log(tempTimeline);
+        console.log(this.tempTimeline);
         if(currentFunction == "getFullYear"){
             console.log("FULL YEAR ______________________")
             let startingYear = startDate.getFullYear()
@@ -576,31 +846,68 @@ class Graph {
         
         // console.log(yearsDifference);
         // console.log("GETTIMELABELS")
-        // console.log(tempTimeline);
+        // console.log(this.tempTimeline);
 
         return dateResults;
     }
 
+    
     getTempTimeline(){
         let t = this.timeline;
         let start = this.startD;
         let end = this.endD;
-        let tempTimeline = [];
+        this.tempTimeline = [];
 
     
         for(let i = 0; i < t.length; i++){
             let date = new Date(t[i]['stockDate'])
             if(date >= start && date <= end){
                 // console.log("true")
-                tempTimeline.push(t[i]);
+                this.tempTimeline.push(t[i]);
             }
 
         }
-        return tempTimeline;
+        return this.tempTimeline;
     }
-    displayGraph(){
+
+    displayGraph(type){
+        var canvas = this.canvas.getContext('2d');
+        console.log("DEFAULT 0")
+        if(type == "default"){
+            console.log("default")
+            this.initializeDisplay()
+            console.log("default2")
+            this.displayLegend(canvas)
+            this.displayData(canvas)
+            console.log("default3")
+            this.displayAxis(canvas)
+            console.log("default4")
+            this.displayXLabels(canvas)
+            console.log("default5")
+            this.displayYLabels(canvas)
+        }
+
+        if(type == "percentage"){
+            this.initializeDisplay()
+            this.displayLegend(canvas)
+            this.displayData(canvas)
+            this.displayAxis(canvas)
+            this.displayXLabels(canvas)
+            this.displayYLabels(canvas)
+        }
+
+        if(type == "slider"){
+            this.initializeDisplay()
+            this.displayData(canvas)
+
+        }
+        
+       
+
 
     }
+
+    
     //ALL OF THESE FUNCTIONS PURELY FOR COMPLEX CALCS
     getMaxData(passedData){
         var number = null;
@@ -721,6 +1028,62 @@ class Graph {
 
         // console.log("endSliceDate");
         return stockArray;
+
+    }
+
+    setSliderBounds(sliders){
+        // console.log(slider);
+        for(let i = 0; i < sliders.length; i++){
+            var slider = sliders.item(i);
+            // slider.addEventListener("click", clickSlider)
+            // slider.addEventListener("input", moveSlider)
+            slider.setAttribute("min",0);
+            slider.setAttribute("max",this.tempTimeline.length - 1);
+
+            if(i == 0){
+                slider.setAttribute("value",0)
+            }
+
+            if(i == 1){
+                slider.setAttribute("value",this.tempTimeline.length - 1)
+            }
+
+            console.log("CANVAS WIDTH: " +this.canvasWidth);
+            console.log("ACT CANVAS WIDTH: "+this.canvas.getAttribute("width"));
+            var styles="width: 100%;"; 
+            styles += " padding-right: "+ this.rightOffset+"px;";
+            styles += " padding-left: "+ this.leftOffset+"px;";
+            styles += " margin: "+ "0px;";
+            styles += ' background-color:rgba(94, 185, 214, 0.4);';
+            styles += ' z-index: 100; '
+    
+            slider.setAttribute("style",styles)
+
+            console.log(slider);
+        
+            
+        }
+
+       
+        // var styles="width: "+this.actualWidth+"px;"; 
+        // console.log("CANVAS WIDTH: " +this.canvasWidth);
+        // console.log("ACT CANVAS WIDTH: "+this.canvas.getAttribute("width"));
+        // var styles="width: 100%;"; 
+        // styles += " padding-right: "+ this.rightOffset+"px;";
+        // styles += " padding-left: "+ this.leftOffset+"px;";
+        // styles += " margin: "+ "0px;";
+        // styles += ' background-color:rgba(94, 185, 214, 0.4);';
+        // styles += ' z-index: 100; '
+
+        // slider.setAttribute("style",styles)
+        // slider.style.margin-left=this.leftOffset.toString()+"px";
+        // slider.style.margin-right= this.rightOffset.toString()+"px";
+        // slider.style.marginRight = "100px";
+        // slider.style.width = "30px";
+       // document.getElementById("lol").style.margin-left="lol"
+        // slider.setAttribute("style","width:"+this.actualWidth+"px;");
+        // slider.setAttribute("style","margin-left:"+ this.leftOffset+"px;");
+        // slider.setAttribute("style","margin-right:"+ this.rightOffset+"px;");
 
     }
 

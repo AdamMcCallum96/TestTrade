@@ -127,7 +127,7 @@ class PageMultiGraph {
 
             console.log("Height: "+ focus['graphHeight']);
             console.log("Height: "+ focus['heightOffset']);
-            console.log("Height: "+ focus['topOffset']);
+            console.log("Height: "+ focus['this.topOffset']);
             console.log("Graph Dif: "+ focus['graphDif']);
             
            
