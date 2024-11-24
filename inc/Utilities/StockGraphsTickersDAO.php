@@ -14,6 +14,29 @@ static function createStockGraphsTickers(StockGraphsTickers $class){
 		self::$database->bind(':stock_id', $class->getStock_id());
 		self::$database->execute();
 	}
+
+static function getGraphsTickers($userID, $graphID){
+	$sql = 'SELECT * FROM StockGraphTickers WHERE user_id = :userID && graph_id = :graph_id';
+
+
+	self::$database->query($sql);
+	self::$database->bind(':user_id', $userID);
+	self::$database->bind(':graph_id', $graphID);
+	self::$database->execute();
+	return self::$database->resultSet();
+}
+
+static function deleteGraphTickers(){
+	$sql = "DELETE * FROM StockGraphsTickers WHERE StockGraphTickers WHERE 
+	user_id = :userID 
+	&& graph_id = :graph_id
+	&& stock_id = :stock_id";
+	self::$database->query($sql);
+	self::$database->bind(':user_id', $class->getUserID());
+	self::$database->bind(':graph_id', $class->getGraphID());
+	self::$database->bind(':stock_od', $class->getStockID());
+	self::$database->execute();
+	return self::$database->resultSet();
 }
 
 ?>

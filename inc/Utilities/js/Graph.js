@@ -52,6 +52,10 @@ class Graph {
         
     }
 
+    getDateFromIndex(index){
+        return this.timeline[index]['stockDate'];
+    }
+
 
     calculateGraph(startDate, endDate, type){
         
@@ -416,6 +420,8 @@ class Graph {
        canvas.stroke();
        canvas.beginPath();
        let legendYPixels = 0;
+       console.log("temp");
+       console.log(this.tempData);
        for(let i = 0; i < this.tempData.length; i++) {
 
         //in theory we can have a max of ten things in our graph with this
@@ -871,7 +877,9 @@ class Graph {
     }
 
     displayGraph(type){
+        
         var canvas = this.canvas.getContext('2d');
+        canvas.clearRect(0, 0, canvas.width, canvas.height)
         console.log("DEFAULT 0")
         if(type == "default"){
             console.log("default")
@@ -1035,8 +1043,8 @@ class Graph {
         // console.log(slider);
         for(let i = 0; i < sliders.length; i++){
             var slider = sliders.item(i);
-            // slider.addEventListener("click", clickSlider)
-            // slider.addEventListener("input", moveSlider)
+            slider.addEventListener("click", clickSlider)
+            slider.addEventListener("input", moveSlider)
             slider.setAttribute("min",0);
             slider.setAttribute("max",this.tempTimeline.length - 1);
 
@@ -1054,8 +1062,14 @@ class Graph {
             styles += " padding-right: "+ this.rightOffset+"px;";
             styles += " padding-left: "+ this.leftOffset+"px;";
             styles += " margin: "+ "0px;";
-            styles += ' background-color:rgba(94, 185, 214, 0.4);';
+            styles += ' background-color:rgba(94, 185, 214, 0.0);';
             styles += ' z-index: 100; '
+
+            if(i == 0){
+                styles += "margin-right: 10px;";
+            } else {
+
+            }
     
             slider.setAttribute("style",styles)
 

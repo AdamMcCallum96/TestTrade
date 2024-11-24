@@ -24,6 +24,11 @@ class GraphPage {
     //     $this->data = $data;
     // }
 
+    function initJSProperties() { ?>
+    <script type="Text/JavaScript">
+        var allGraphs = [];
+    </script>
+    <?php }
     function displayGraph() { ?>
 
 
@@ -65,8 +70,9 @@ class GraphPage {
         <!-- left: 618px; top: 160px; opacity: 0.5; transition: all 0.5s ease 0s; color: rgb(255, 255, 255); background: rgb(3, 169, 244);' -->
         </draw-canvas-data-set>
         <?php if($this->type == "slider"){?>
-        <input type = "range" class="graphSliders" id="<?php echo $this->sliderID ?>" min="0" max="250">
-        <input type = "range" class="graphSliders" id="<?php echo $this->sliderID ?>" min="0" max="250">
+        <div id="sliderOverlay"></div>
+        <input type = "range" class="graphSliders" id="startSlider" min="0" max="250">
+        <input type = "range" class="graphSliders" id="endSlider" min="0" max="250">
         <?php }?>
             </div>
 
@@ -81,18 +87,18 @@ class GraphPage {
         
         var type = <?php echo json_encode($this->type);?>
 
-        $(document).ready(function() {
+     //   $(document).ready(function() {
     // This WILL work because we are listening on the 'document', 
     // for a click on an element with an ID of #test-element
-            $(".graphSliders").on("click",function() {
+            //$(".graphSliders").on("click",function() {
               //  event.
-            alert("click bound to document listening for #test-element");
-            });
+            // alert("click bound to document listening for #test-element");
+           // });
 
     
-        });
+      //  });
 
-
+        
         graphSetup(type)
         function graphSetup(type){
             
@@ -123,7 +129,7 @@ class GraphPage {
             var graph<?php echo $this->id?> = new Graph(s.width, s.height, data, timeline, s, colours);
             //var type = "reg";
             
-            var start = "2012-04-01";
+            var start = "2015-04-01";
             var end = "2013-01-10";
             
             graph<?php echo $this->id?>.setMarginsLRTBS(0.1,0.2,0.1,0.1,"percentile")
@@ -141,31 +147,69 @@ class GraphPage {
                     
                 
             }
+            allGraphs.push(graph<?php echo $this->id?>);
         }
         function moveSlider(event){
-            let originalID = event.target.id;
+            let originalID = event.target.id
+            let movedElement = document.getElementById(originalID);
             console.log(event);
-            // var sliders[]
-            console.log(event.clientX)
-            console.log("lol1")
-            var sliders = document.getElementsByClassName("graphSliders");
-            for(let i = 0; i <= sliders.length; i++){
-                
+
+            //.log(originalID)
+            var start = document.getElementById("startSlider");
+            var end = document.getElementById("endSlider");
+            console.log(start);
+            console.log("WTF");
+            if(start ==  movedElement){
+                console.log("START ELEMENT")
+                console.log(start.value);
+                console.log(end.value);
+                if(parseInt(start.value) >= parseInt(end.value)){
+                start.value = end.value - 1;
+                }
+            } else {
+                console.log("END ELEMENT")
+                if(parseInt(end.value) <= parseInt(start.value)){
+                    end.value = parseInt(start.value) + 1;
+                }
             }
+            
+
 
         }
 
         function clickSlider(event){
 
-            console.log(event.target.id);
-            console.log("lol2")
-            // sliderID = event.target.id;
-            // var sliders = []
-            var sliders = document.getElementsByClassName("graphSliders");
-            console.log(event.clientX);
-            for(let i = 0; i <= sliders.length; i++){
-                
+            let originalID = event.target.id
+            let movedElement = document.getElementById(originalID);
+            console.log(event);
+
+
+            var start = document.getElementById("startSlider");
+            var end = document.getElementById("endSlider");
+            if(start ==  movedElement){
+                console.log("START ELEMENT")
+                console.log(start.value);
+                console.log(end.value);
+                console.log(start.value >= end.value)
+                if(parseInt(start.value) >= parseInt(end.value)){
+                start.value = parse_Int(end.value) - 1;
+                }
+            } else {
+                console.log("END ELEMENT")
+                console.log(start.value);
+                console.log(end.value);
+                if(parseInt(end.value) <= parseInt(start.value)){
+                    end.value = parseInt(start.value) + 1;
+                }
             }
+            console.log(allGraphs);
+
+           start = allGraphs[0].getDateFromIndex(start.value)
+           end = allGraphs[0].getDateFromIndex(end.value)
+           console.log("START START START:" + start)
+           console.log("END VALUE" + end)
+           allGraphs[0].calculateGraph(start, end, type)
+           allGraphs[0].displayGraph("default")
 
         }
 

@@ -47,9 +47,10 @@ $gp = new GraphPage($data, $dates,$colours, "default","graphid1");
 
 PageFunctionality::nav();
 // var_dump($gp->getData());
+$gp->initJSProperties();
 $gp->displayGraph();
-// $gl = new GraphPage($data, $dates, $colours, "slider","graphid2");
-// $gl->displayGraph();
+$gl = new GraphPage($data, $dates, $colours, "slider","graphid2");
+$gl->displayGraph();
 
 //var_dump($data);
 var_dump(json_encode($data));
