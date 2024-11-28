@@ -30,6 +30,8 @@ class Graph {
         this.graphMarginTop = 0.1
         this.graphMarginBottom = 0.1
         this.graphMarginType = "default"
+
+        
     }
     //smaller constructors/settings
     setMarginsLRTBS(left, right, top, bottom, settings){
@@ -53,19 +55,37 @@ class Graph {
     }
 
     getDateFromIndex(index){
+        console.log("TIMELINE");
+        console.log(this.timeline);
         return this.timeline[index]['stockDate'];
     }
 
 
     calculateGraph(startDate, endDate, type){
-        
-        this.tempData = this.data
 
+        //resetting all used globals
+        this.graphMax = []
+        this.graphBottom = []
+        this.graphYScale = []
+        this.percentChange = [];
+        
+        this.testedGraphBottom = [];
+        this.possibleYScales = [];
+        this.validYScale = [];
+        this.validGraphBottom = [];
+        this.validGraphMax = [];
+        
+        
+        this.tempData = this.data.slice(0);
+        
+        console.log("TEMP DATA HERE");
         console.log(this.data);
         //Slice the data based on the users request dates
         this.tempData = this.sliceByDate(this.tempData, startDate, endDate);
         this.tempTimeline = this.getTempTimeline();
         
+        console.log("TEMP DATA AFTE SLICE");
+        console.log(this.data);
         var max = this.getMaxData(this.tempData);
         var min = this.getMinData(this.tempData)
 
@@ -74,6 +94,12 @@ class Graph {
         var maxSharePrice = 10000000000
         var lowestSharePrice = 0.0001;
         var graphScales = new Array();
+
+        
+
+        
+
+
         //Calculate all possible graph scales
         while(lowestSharePrice <= maxSharePrice){
             graphScales.push(lowestSharePrice);
@@ -354,7 +380,7 @@ class Graph {
             console.log("YSCALE: " + this.graphYScale);
             console.log("my CALC: "+ (2.2 + 0.2) )
             currentYValue = Math.floor(currentYValue * intMultiplier) / intMultiplier;
-
+            
 
             let value = currentYValue - this.graphBottom
                     
@@ -473,12 +499,13 @@ class Graph {
                     value = value - this.graphBottom
                     
                     value = value / (this.graphMax - this.graphBottom);
-              
-                    console.log(value);
-                    console.log(this.graphMax);
-                    console.log(this.graphBottom);
-                    console.log(this.actualHeight);
-                    console.log(this.coordYTop);
+                    
+                    // console.log("START");
+                    // console.log(value);
+                    // console.log(this.graphMax);
+                    // console.log(this.graphBottom);
+                    // console.log(this.actualHeight);
+                    // console.log(this.coordYTop);
                     let ycoord = ((1 - value)* this.actualHeight) + this.coordYTop;
 
                     //subtract 1 from temp timeline because it is zero based
@@ -487,10 +514,10 @@ class Graph {
                 canvas.beginPath()
                 if(this.previousYCoord[x] == undefined && this.previousXCoord[x] == undefined){
                     canvas.moveTo(xcoord, ycoord);
-                    console.log(xcoord + " " +ycoord)
+                    // console.log(xcoord + " " +ycoord)
                 } else {
                     canvas.moveTo(this.previousXCoord[x],this.previousYCoord[x]);
-                    console.log(xcoord + " " +ycoord)
+                    // console.log(xcoord + " " +ycoord)
                 }
                     
                    this.previousYCoord[x] = ycoord;
@@ -528,7 +555,8 @@ class Graph {
     displayXLabels(canvas){
         let labels = this.getTimeLabels(this.tempData, this.tempTimeline)
         //Labels array contains [[stockDate:'date', displayText: '2011']]
- 
+        console.log("LABELS HERE: "+labels);
+        console.log(labels);
         //Draw XTimeLabels
         let n = 0;
         
@@ -570,22 +598,32 @@ class Graph {
 
     displayYLabels(canvas){
         let currentYValue = this.graphBottom
-        console.log("BOTTOM");
-        console.log("");
+        // console.log("BOTTOM");
+        // console.log("");
 
-        console.log(typeof(this.graphYScale));
-        console.log(this.graphYScale.toString())
+        // console.log(typeof(this.graphYScale));
+        // console.log(this.graphYScale.toString())
+
+        // console.log("SUBTRACTED FROM:");
+        // console.log(this.graphYScale.toString().length);
+        // console.log("SUBTRACTED AMOUNT");
+        // console.log(Math.floor(this.graphYScale).toString().length);
+
         let intDifference = this.graphYScale.toString().length - Math.floor(this.graphYScale).toString().length;
         let intMultiplier = 10 * intDifference;
+        if(intDifference == 0){
+            intMultiplier = 1;
+        }
         while(currentYValue <= this.graphMax){
             //Percent of total graph
             
-            console.log("BOTTOM:" +this.graphBottom)
-            console.log("YVALUE: " + currentYValue );
-            console.log("YSCALE: " + this.graphYScale);
-            console.log("my CALC: "+ (2.2 + 0.2) )
+            // console.log("Max:" +this.graphMax)
+            // console.log("BOTTOM:" +this.graphBottom)
+            // console.log("YVALUE: " + currentYValue );
+            // console.log("YSCALE: " + this.graphYScale);
+            // console.log("my CALC: "+ (2.2 + 0.2) )
             currentYValue = Math.floor(currentYValue * intMultiplier) / intMultiplier;
-
+            // console.log("INT MULTI: " + intMultiplier);
 
             let value = currentYValue - this.graphBottom
                     
@@ -593,10 +631,15 @@ class Graph {
             //value = this.graphBottom / (this.graphMax - this.graphBottom);
             
             let ycoord = ((1 - value)* this.actualHeight) + this.coordYTop;
+            
+
             canvas.moveTo(this.coordXLeft, ycoord);
             //lineWidth =
             canvas.lineTo(this.coordXLeft - this.labelLineLength, ycoord);
-
+            // console.log("XY");
+            // console.log("COORDX, LABELINE");
+            // console.log(this.coordXLeft);
+            // console.log(this.labelLineLength);
             let number = parseInt(0.35   * this.bottomOffset);
                  let font = number.toString()+"px serif"
                  canvas.font = font;
@@ -609,8 +652,9 @@ class Graph {
 
             currentYValue += this.graphYScale;
             console.log("CURRENY Y VALUE=" + currentYValue);
+            
         }
-
+        
         canvas.moveTo(this.coordXLeft - this.labelLineLength, this.coordYTop)
         canvas.lineTo(this.coordXLeft, this.coordYTop);
         canvas.lineTo(this.coordXLeft, this.coordYBottom );
@@ -658,18 +702,20 @@ class Graph {
         }
         if(yearsDifference == 0 && monthDifference >= 3){
             //monthly
+            console.log("hit2")
             currentFunction = "getMonth"
             period = 1;
         }
         
         if(yearsDifference == 0 && monthDifference >= 6){
-            // bimonthly
+            console.log("hit3")
             currentFunction = "getMonth"
             period = 2;
         }
 
         if(yearsDifference >= 1){
             // quarterely
+            console.log("hit4")
             currentFunction = "getMonth"
              period = 3;
          }
@@ -766,10 +812,19 @@ class Graph {
             //let iteratorDate = new Date("2001-01-01")
             let tempDate = new  Date("2001-01-01")
             //tempDate.setMonth((testDate.getMonth()+ result));
-            let day = result;   
+            let day = result;  
+            // day = 15; 
             tempDate.setMonth(day)
+            let years = 0;
+            
+            while(day >= 11){
+                //testDate.setFullYear(testDate.getFullYear()+ 1);
+                day = day - 12;
+                years += 1
+            }
             //tempDate.setMonth(result - 1);
-            let dateString = testDate.getFullYear().toString().concat('-',(tempDate.getMonth()+1),'-01')
+            console.log("GET MONTH: " +tempDate.getMonth())
+            let dateString = (testDate.getFullYear() + years).toString().concat('-',(tempDate.getMonth()+1),'-01')
             console.log("DATE STRING: "+ dateString);
             let temptemp = new Date(dateString);
             //for some odd reason the data above is a timestamp and needs
@@ -782,8 +837,9 @@ class Graph {
             //console.log(testDate);
             let numberOfLabels = 0;
             // console.log(testDate);
-            // console.log(startDate);
-            // console.log(endDate);
+            console.log("SD:"+startDate);
+            console.log("ID:"+iteratorDate)
+            console.log("ED:"+endDate);
             console.log(iteratorDate >= startDate);
             console.log(iteratorDate <= endDate);
             //time between start and end date
@@ -795,9 +851,9 @@ class Graph {
                 // 1:1
                 //by the end it will be close to
                 //0:1
-                console.log("IDIF: "+ iDifference);
-                console.log("DDIF: " + dateDifference)
-                console.log("DIVISION: " + iDifference/dateDifference);
+                // console.log("IDIF: "+ iDifference);
+                // console.log("DDIF: " + dateDifference)
+                // console.log("DIVISION: " + iDifference/dateDifference);
                 //The number was chosing by the  iDifference/dateDifference
                 //To ensure that the graph does not display x axis labels
                 //after the last 3.4% of the graph
@@ -907,6 +963,9 @@ class Graph {
         if(type == "slider"){
             this.initializeDisplay()
             this.displayData(canvas)
+            this.displayLegend(canvas)
+            this.displayAxis(canvas)
+            this.displayXLabels(canvas)
 
         }
         
@@ -1039,6 +1098,12 @@ class Graph {
 
     }
 
+    getLength(){
+        
+        return this.timeline.length;
+
+    }
+
     setSliderBounds(sliders){
         // console.log(slider);
         for(let i = 0; i < sliders.length; i++){
@@ -1058,10 +1123,14 @@ class Graph {
 
             console.log("CANVAS WIDTH: " +this.canvasWidth);
             console.log("ACT CANVAS WIDTH: "+this.canvas.getAttribute("width"));
-            var styles="width: 100%;"; 
+            var styles = "width: "+ this.canvasWidth +"px;";
+            
+            //var styles="width: 100%;"; 
+
             styles += " padding-right: "+ this.rightOffset+"px;";
             styles += " padding-left: "+ this.leftOffset+"px;";
             styles += " margin: "+ "0px;";
+            // styles += 'margin: auto;'
             styles += ' background-color:rgba(94, 185, 214, 0.0);';
             styles += ' z-index: 100; '
 
@@ -1074,7 +1143,8 @@ class Graph {
             slider.setAttribute("style",styles)
 
             console.log(slider);
-        
+            // overLay = document.getElementById(sliderOverlay);
+
             
         }
 

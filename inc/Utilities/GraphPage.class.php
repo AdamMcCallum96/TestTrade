@@ -70,7 +70,13 @@ class GraphPage {
         <!-- left: 618px; top: 160px; opacity: 0.5; transition: all 0.5s ease 0s; color: rgb(255, 255, 255); background: rgb(3, 169, 244);' -->
         </draw-canvas-data-set>
         <?php if($this->type == "slider"){?>
-        <div id="sliderOverlay"></div>
+        <div id="sliderOverlay">
+            <div id="generalOverlay">
+            <div id="startOverlay" class="overlay3"></div>
+            <div id="gapOverlay" class="overlay3"></div>
+            <div id="endOverlay" class="overlay3"></div>
+            </div>
+        <!-- </div> -->
         <input type = "range" class="graphSliders" id="startSlider" min="0" max="250">
         <input type = "range" class="graphSliders" id="endSlider" min="0" max="250">
         <?php }?>
@@ -152,26 +158,99 @@ class GraphPage {
         function moveSlider(event){
             let originalID = event.target.id
             let movedElement = document.getElementById(originalID);
-            console.log(event);
+            // console.log(event);
+
+            let startOverlay = document.getElementById("startOverlay");
+            let gapOverlay = document.getElementById("gapOverlay");
+            let endOverlay = document.getElementById("endOverlay");
+            let generalOverlay = document.getElementById("generalOverlay");
+
 
             //.log(originalID)
             var start = document.getElementById("startSlider");
             var end = document.getElementById("endSlider");
-            console.log(start);
-            console.log("WTF");
+            let length = allGraphs[0].getLength();
+            // console.log(start);
+            // console.log("WTF");
             if(start ==  movedElement){
-                console.log("START ELEMENT")
-                console.log(start.value);
-                console.log(end.value);
+                // console.log("START ELEMENT")
+                
+                // console.log(start.value);
+                // console.log(end.value);
                 if(parseInt(start.value) >= parseInt(end.value)){
                 start.value = end.value - 1;
                 }
+
+                
             } else {
                 console.log("END ELEMENT")
                 if(parseInt(end.value) <= parseInt(start.value)){
                     end.value = parseInt(start.value) + 1;
                 }
             }
+            let standard = "z-index: 10;"
+            
+            console.log("EQUATION");
+            console.log(end.value - start.value);
+            console.log("LENGTH"+ length)
+            let sv = start.value;
+            let gv = parseInt(end.value) - parseInt(start.value);
+            let ev = length - parseInt(sv) - gv;
+            console.log(length);
+
+            
+            let overlayColour = "rgba(0, 99, 106, 0.57);"
+
+            let sStyle = standard+"background-color: "+ overlayColour
+            let gStyle = standard;
+            let eStyle = standard+ "background-color: "+ overlayColour
+
+            // let sStyle = "flex: " +sv+ "; "+ standard+"background-color: "+ overlayColour
+            // let gStyle = "flex: " +gv+ "; "+ standard;
+            // let eStyle = "flex: " +ev+ "; "+ standard+ "background-color: "+ overlayColour
+
+            // let sStyle = "flex: " +sv+ "; "+ standard+"background-color: "+ overlayColour
+            // let gStyle = "flex: " +gv+ "; "+ standard;
+            // let eStyle = "flex: " +ev+ "; "+ standard+ "background-color: "+ overlayColour
+            console.log(sStyle);
+            startOverlay.setAttribute("style",sStyle)
+            gapOverlay.setAttribute("style",gStyle)
+            endOverlay.setAttribute("style",eStyle)
+     
+            
+
+            let gov = document.getElementById("generalOverlay");
+
+           gov.style.height= allGraphs[1].canvasHeight
+           
+           let lOffset = allGraphs[1].leftOffset
+           let rOffset = allGraphs[1].rightOffset
+           let width = allGraphs[1].canvasWidth;
+           gov.style.width = allGraphs[1].canvasWidth - rOffset - lOffset;
+
+           console.log("OFF SETS");
+           console.log(lOffset);
+           console.log(rOffset);
+
+            generalOverlay.style.marginRight = rOffset;
+            generalOverlay.style.marginLeft = lOffset;
+
+
+
+           startOverlay.style.width = sv / length * (width - lOffset - rOffset)
+           gapOverlay.style.width = gv / length * (width - lOffset - rOffset)
+           endOverlay.style.width = ev / length * (width - lOffset - rOffset)
+           console.log("COMBINED WIDTH: " + (parseInt(sv) +parseInt(gv) +parseInt(ev)))
+           console.log("END OVERLAY WIDTH")
+           console.log(sv);
+           console.log(gv);
+           console.log(ev);
+           console.log(ev / length * (width - lOffset - rOffset));
+           console.log("WIDTH: " + gapOverlay.style.width)
+           console.log("DOES THIS WORK");
+           console.log(allGraphs[1].canvasHeight)
+           console.log(allGraphs[1].canvasWidth)
+
             
 
 
@@ -187,17 +266,17 @@ class GraphPage {
             var start = document.getElementById("startSlider");
             var end = document.getElementById("endSlider");
             if(start ==  movedElement){
-                console.log("START ELEMENT")
-                console.log(start.value);
-                console.log(end.value);
+                // console.log("START ELEMENT")
+                // console.log(start.value);
+                // console.log(end.value);
                 console.log(start.value >= end.value)
                 if(parseInt(start.value) >= parseInt(end.value)){
                 start.value = parse_Int(end.value) - 1;
                 }
             } else {
-                console.log("END ELEMENT")
-                console.log(start.value);
-                console.log(end.value);
+                // console.log("END ELEMENT")
+                // console.log(start.value);
+                // console.log(end.value);
                 if(parseInt(end.value) <= parseInt(start.value)){
                     end.value = parseInt(start.value) + 1;
                 }
@@ -206,10 +285,12 @@ class GraphPage {
 
            start = allGraphs[0].getDateFromIndex(start.value)
            end = allGraphs[0].getDateFromIndex(end.value)
-           console.log("START START START:" + start)
-           console.log("END VALUE" + end)
+        //    console.log("START START START:" + start)
+        //    console.log("END VALUE" + end)
            allGraphs[0].calculateGraph(start, end, type)
            allGraphs[0].displayGraph("default")
+           
+           
 
         }
 
