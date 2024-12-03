@@ -29,6 +29,19 @@ class GraphPage {
         var allGraphs = [];
     </script>
     <?php }
+
+    function addGraph() { ?>
+    <script type="Text/JavaScript">
+        gm.addGraph(graph)
+    </script>
+    <?php }
+
+    function initGraphManager() { ?>
+        <script src="inc/Utilities/js/GraphManager.js"></script>
+        <script type="Text/JavaScript">
+            var GM = new GraphManager();
+        </script>
+    <?php }
     function displayGraph() { ?>
 
 
