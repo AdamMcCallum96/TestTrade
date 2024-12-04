@@ -68,7 +68,20 @@ class Graph {
 
     calculateGraph(startDate, endDate, type){
         
-        this.tempData = this.data
+        //resetting all used globals
+        this.graphMax = []
+        this.graphBottom = []
+        this.graphYScale = []
+        this.percentChange = [];
+        
+        this.testedGraphBottom = [];
+        this.possibleYScales = [];
+        this.validYScale = [];
+        this.validGraphBottom = [];
+        this.validGraphMax = [];
+        
+        
+        this.tempData = this.data.slice(0);
 
         console.log(this.data);
         //Slice the data based on the users request dates
@@ -483,11 +496,11 @@ class Graph {
                     
                     value = value / (this.graphMax - this.graphBottom);
               
-                    console.log(value);
-                    console.log(this.graphMax);
-                    console.log(this.graphBottom);
-                    console.log(this.actualHeight);
-                    console.log(this.coordYTop);
+                    // console.log(value);
+                    // console.log(this.graphMax);
+                    // console.log(this.graphBottom);
+                    // console.log(this.actualHeight);
+                    // console.log(this.coordYTop);
                     let ycoord = ((1 - value)* this.actualHeight) + this.coordYTop;
 
                     //subtract 1 from temp timeline because it is zero based
@@ -496,10 +509,10 @@ class Graph {
                 canvas.beginPath()
                 if(this.previousYCoord[x] == undefined && this.previousXCoord[x] == undefined){
                     canvas.moveTo(xcoord, ycoord);
-                    console.log(xcoord + " " +ycoord)
+                    // console.log(xcoord + " " +ycoord)
                 } else {
                     canvas.moveTo(this.previousXCoord[x],this.previousYCoord[x]);
-                    console.log(xcoord + " " +ycoord)
+                    // console.log(xcoord + " " +ycoord)
                 }
                     
                    this.previousYCoord[x] = ycoord;
@@ -579,20 +592,23 @@ class Graph {
 
     displayYLabels(canvas){
         let currentYValue = this.graphBottom
-        console.log("BOTTOM");
-        console.log("");
+        // console.log("BOTTOM");
+        // console.log("");
 
-        console.log(typeof(this.graphYScale));
-        console.log(this.graphYScale.toString())
+        // console.log(typeof(this.graphYScale));
+        // console.log(this.graphYScale.toString())
         let intDifference = this.graphYScale.toString().length - Math.floor(this.graphYScale).toString().length;
         let intMultiplier = 10 * intDifference;
+        if(intDifference == 0){
+            intMultiplier = 1;
+        }
         while(currentYValue <= this.graphMax){
             //Percent of total graph
             
-            console.log("BOTTOM:" +this.graphBottom)
-            console.log("YVALUE: " + currentYValue );
-            console.log("YSCALE: " + this.graphYScale);
-            console.log("my CALC: "+ (2.2 + 0.2) )
+            // console.log("BOTTOM:" +this.graphBottom)
+            // console.log("YVALUE: " + currentYValue );
+            // console.log("YSCALE: " + this.graphYScale);
+            // console.log("my CALC: "+ (2.2 + 0.2) )
             currentYValue = Math.floor(currentYValue * intMultiplier) / intMultiplier;
 
 
@@ -777,8 +793,16 @@ class Graph {
             //tempDate.setMonth((testDate.getMonth()+ result));
             let day = result;   
             tempDate.setMonth(day)
+            let years = 0;
+            
+            while(day >= 11){
+                //testDate.setFullYear(testDate.getFullYear()+ 1);
+                day = day - 12;
+                years += 1
+            }
             //tempDate.setMonth(result - 1);
-            let dateString = testDate.getFullYear().toString().concat('-',(tempDate.getMonth()+1),'-01')
+            // let dateString = testDate.getFullYear().toString().concat('-',(tempDate.getMonth()+1),'-01')
+            let dateString = (testDate.getFullYear() + years).toString().concat('-',(tempDate.getMonth()+1),'-01')
             console.log("DATE STRING: "+ dateString);
             let temptemp = new Date(dateString);
             //for some odd reason the data above is a timestamp and needs
@@ -916,6 +940,9 @@ class Graph {
         if(type == "slider"){
             this.initializeDisplay()
             this.displayData(canvas)
+            this.displayLegend(canvas)
+            this.displayAxis(canvas)
+            this.displayXLabels(canvas)
 
         }
         
@@ -1048,6 +1075,12 @@ class Graph {
 
     }
 
+    getLength(){
+        
+        return this.timeline.length;
+
+    }
+
     setSliderBounds(sliders){
         // console.log(slider);
         for(let i = 0; i < sliders.length; i++){
@@ -1067,7 +1100,7 @@ class Graph {
 
             console.log("CANVAS WIDTH: " +this.canvasWidth);
             console.log("ACT CANVAS WIDTH: "+this.canvas.getAttribute("width"));
-            var styles="width: 100%;"; 
+            var styles = "width: "+ this.canvasWidth +"px;";
             styles += " padding-right: "+ this.rightOffset+"px;";
             styles += " padding-left: "+ this.leftOffset+"px;";
             styles += " margin: "+ "0px;";

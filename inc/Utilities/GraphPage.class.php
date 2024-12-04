@@ -30,17 +30,32 @@ class GraphPage {
     </script>
     <?php }
 
-    function addGraph() { ?>
+    function addGraph($data, $dates, $colours, $type, $id) { ?>
+    <script src="inc/Utilities/js/Graph.js"></script>
+
+    
+
+    <script 
+    src="https://code.jquery.com/jquery-3.7.0.js"
+    integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+    crossorigin="anonymous">
+    </script>
     <script type="Text/JavaScript">
+    
+    //Just ensure every ID generates a unique ID throughout your whole program
+    //For every bit of javascript created
+    
+
         gm.addGraph(graph)
     </script>
     <?php }
 
-    function initGraphManager() { ?>
+    function initGraphManager($id) { ?>
         <script src="inc/Utilities/js/GraphManager.js"></script>
         <script type="Text/JavaScript">
-            var GM = new GraphManager();
+            var gm = new GraphManager(<?php echo json_encode($id)?>);
         </script>
+        <div id="<?php echo json_encode($id)?>" class="graphManager"></div>
     <?php }
     function displayGraph() { ?>
 
@@ -52,20 +67,16 @@ class GraphPage {
         integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
         crossorigin="anonymous">
         </script>
+        <script type="Text/Javascript">gm.displayGraph()</script>
 
 <div class="graphRelativesContainers">
         <div class="graphButtonsContainer">
-            <!-- <button class='graphButton1' id='oneMonth' onClick="setGraph" style="">1M</button>
-            <button class='graphButton1' id='sixMonths' onClick="setGraph" style="">6M</button>
-            <button class='graphButton1' id='oneYear' onClick="setGraph" style="">1Y</button>
-            <button class='graphButton1' id='fiveYears' onClick="setGraph" style="">5Y</button>
-            <button class='graphButton1' id='max' onClick="setGraph" style="">Max</button> -->
         </div>
 
         <!-- Canvas to display the graph on -->
         <div class="graphFlexbox">
             <div class="leftFlex">
-            <!-- le width="1600px" height="600px" -->
+          
         <canvas le width="20px" height="10px" id='<?php echo $this->id ?>'style='background-color: white;'></canvas>
         <!-- these were fit content for height and width before -->
         <!--  width: fit-content;-->

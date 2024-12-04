@@ -1,8 +1,10 @@
 //Graph Managers works as an iteration tool
 //To store graphs and display graphs upon request.
 class GraphManager {
-    constructor(){
+    constructor(id){
 
+        //Div ID which holds all the content related to the graphs
+        this.id = id;
         this.graphQueue = 0;
     }
 

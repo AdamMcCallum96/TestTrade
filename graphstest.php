@@ -55,7 +55,7 @@ $colours = ["#FF0000",'#008800',"#0000FF"];
 //flexibility with regard to what content can be displayed inbetween
 //different graphs/datasets
 $gp = new GraphPage($data, $dates,$colours, "default","graphid1");
-$gp.initGraphManager()
+// $gp.initGraphManager()
 // $gp.addGraph();
 
 PageFunctionality::nav();
@@ -63,7 +63,7 @@ PageFunctionality::nav();
 $gp->initJSProperties();
 $gp->displayGraph();
 $gl = new GraphPage($data, $dates, $colours, "slider","graphid2");
-// $gl->displayGraph();
+$gl->displayGraph();
 
 
 // $gs = new GraphPage($data, $dates, $colours, "slider","graphid2");
