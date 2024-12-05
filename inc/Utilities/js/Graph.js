@@ -16,13 +16,20 @@ class Graph {
     percentChange = [];
     childGraph
     
-    constructor(canvasWidth, canvasHeight, data, timeline, canvas, colours){
-        this.canvasHeight = canvasHeight;
-        this.canvasWidth = canvasWidth;
+    constructor(data, timeline, colours, type){
+        // this.canvasWidth = canvasWidth;
+        // this.canvasHeight = canvasHeight;
         this.data = data;
+        console.log("DATA IN CONST");
+        
+        console.log(data);
+        console.log(this.data);
+        console.log("TIMELINE");
+        console.log(timeline);
         this.timeline = timeline;
-        this.canvas = canvas;
+        // this.canvas = canvas;
         this.colours = colours;
+        this.type = type;
 
         this.yScaleLabelsMin = 3 //the number of labels on the y axis minimum
         this.yScaleLabelsMax = 6 // the max
@@ -37,8 +44,12 @@ class Graph {
         this.childGraph = childGraph;
     }
 
+    setCanvasID(id){
+        this.canvasID = id;
+    }
+
     createChildGraph(){
-       this.child = new Graph()
+    //    this.child = new Graph()
     }
 
     setMarginsLRTBS(left, right, top, bottom, settings){
@@ -67,7 +78,7 @@ class Graph {
 
 
     calculateGraph(startDate, endDate, type){
-        
+        var type = this.type
         //resetting all used globals
         this.graphMax = []
         this.graphBottom = []
@@ -80,7 +91,8 @@ class Graph {
         this.validGraphBottom = [];
         this.validGraphMax = [];
         
-        
+        console.log("THIS DATA");
+        console.log(this.data);
         this.tempData = this.data.slice(0);
 
         console.log(this.data);
@@ -907,6 +919,48 @@ class Graph {
 
         }
         return this.tempTimeline;
+    }
+
+    runGraph(){
+
+        let graphPageID = document.getElementById(this.graphPageID);
+        let graphElement = document.createElement('canvas');
+
+        graphElement.id = this.canvasID;
+
+        this.canvas = graphElement 
+        let canvas = this.canvas 
+        canvas.insertAdjacentElement("beforeend",graphPageID)
+
+        var canvasParent = canvas.parentNode,
+        styles = getComputedStyle(canvasParent),
+            width = parseInt(styles.getPropertyValue("width"), 10),
+            height = parseInt(styles.getPropertyValue("height"), 10);
+
+        canvas.width = width;
+        canvas.height = width/2.66
+        canvasParent.setAttribute("style","height:"+s.height+"px");
+        if(type == "slider"){
+            s.height = width/10
+        }
+
+        this.canvasWidth = width;
+        this.canvasHeight = canvas.height;
+        this.setMarginsLRTBS(0.1,0.2,0.1,0.1,"percentile");
+        var start = "2015-04-01";
+        var end = "2013-01-10";
+        this.calculateGraph(start, end, this.type)
+        console.log(this.type);
+        this.displayGraph(this.type);
+        
+        if(type == "slider"){
+            var sliders = document.getElementsByClassName("graphSliders");
+
+            this.setSliderBounds(sliders);
+        }
+        allGraphs.push(this.canvasID);
+        
+        
     }
 
     displayGraph(type){

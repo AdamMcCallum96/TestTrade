@@ -31,36 +31,55 @@ class GraphPage {
     <?php }
 
     function addGraph($data, $dates, $colours, $type, $id) { ?>
-    <script src="inc/Utilities/js/Graph.js"></script>
-
     
 
+    
+    
     <script 
     src="https://code.jquery.com/jquery-3.7.0.js"
     integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
     crossorigin="anonymous">
     </script>
     <script type="Text/JavaScript">
+    {
     
-    //Just ensure every ID generates a unique ID throughout your whole program
-    //For every bit of javascript created
-    
+        
+        let data = <?php $this->data = $data ;echo json_encode($this->data); ?>;
+        console.log("ADDGRAPH DATA:")
+        console.log(data);
+        let timeline = <?php echo json_encode($dates); ?>;
+        let colours = <?php echo json_encode($colours); ?>;
+        let type = <?php echo json_encode($type); ?>;
+        {
+        var testGraph = new Graph(data, timeline, colours, type);
+        
+        console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+        console.log("testGraph")
+        console.log(testGraph);
+        gm.addGraph(testGraph)
+        }
+        
+        //Just ensure every ID generates a unique ID throughout your whole program
+        //For every bit of javascript created
+        
 
-        gm.addGraph(graph)
+        
+    }
     </script>
     <?php }
 
     function initGraphManager($id) { ?>
+         <script src="inc/Utilities/js/Graph.js"></script>
         <script src="inc/Utilities/js/GraphManager.js"></script>
         <script type="Text/JavaScript">
             var gm = new GraphManager(<?php echo json_encode($id)?>);
         </script>
         <div id="<?php echo json_encode($id)?>" class="graphManager"></div>
     <?php }
-    function displayGraph() { ?>
+    function showGraph() { ?>
 
-
-        <script src="inc/Utilities/js/Graph.js"></script>
+        
+        <!-- <script src="inc/Utilities/js/Graph.js"></script> -->
 
         <script 
         src="https://code.jquery.com/jquery-3.7.0.js"
@@ -68,7 +87,9 @@ class GraphPage {
         crossorigin="anonymous">
         </script>
         <script type="Text/Javascript">gm.displayGraph()</script>
-
+    <?php }
+    
+    function displayGraph(){ ?>
 <div class="graphRelativesContainers">
         <div class="graphButtonsContainer">
         </div>

@@ -54,16 +54,20 @@ $colours = ["#FF0000",'#008800',"#0000FF"];
 //If you're only showing one graph it gives you extra
 //flexibility with regard to what content can be displayed inbetween
 //different graphs/datasets
+PageFunctionality::nav();
 $gp = new GraphPage($data, $dates,$colours, "default","graphid1");
 // $gp.initGraphManager()
 // $gp.addGraph();
+$gp->initGraphManager("orange");
+$gp->addGraph($data, $dates, $colours, "default","lol");
+$gp->showGraph();
 
-PageFunctionality::nav();
 // var_dump($gp->getData());
-$gp->initJSProperties();
-$gp->displayGraph();
-$gl = new GraphPage($data, $dates, $colours, "slider","graphid2");
-$gl->displayGraph();
+// $gp->initJSProperties();
+// $gp->displayGraph();
+// $gl = new GraphPage($data, $dates, $colours, "slider","graphid2");
+$gp->addGraph($data, $dates, $colours, "slider","lol");
+$gp->showGraph();
 
 
 // $gs = new GraphPage($data, $dates, $colours, "slider","graphid2");
