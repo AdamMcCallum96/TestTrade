@@ -921,15 +921,19 @@ class Graph {
         return this.tempTimeline;
     }
 
-    runGraph(){
-
-        let graphPageID = document.getElementById(this.graphPageID);
+    runGraph(graphPage){
+        console.log("GRAPH PAGE:" + graphPage)
+        console.log(graphPage
+            
+        )
+        let graphPageID = document.getElementById(graphPage);
         let graphElement = document.createElement('canvas');
 
         graphElement.id = this.canvasID;
 
         this.canvas = graphElement 
         let canvas = this.canvas 
+        console.log(graphPageID)
         canvas.insertAdjacentElement("beforeend",graphPageID)
 
         var canvasParent = canvas.parentNode,
@@ -949,6 +953,7 @@ class Graph {
         this.setMarginsLRTBS(0.1,0.2,0.1,0.1,"percentile");
         var start = "2015-04-01";
         var end = "2013-01-10";
+        console.log("lol");
         this.calculateGraph(start, end, this.type)
         console.log(this.type);
         this.displayGraph(this.type);

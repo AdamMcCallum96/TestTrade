@@ -21,8 +21,8 @@ class GraphManager {
     displayGraph(numberToDisplay){
         let i = 0;
        while(i < numberToDisplay){
-        if(this.graphQueue < graphsArray.length){
-            this.graphsArray[graphQueue].runGraph()
+        if(this.graphQueue < this.graphsArray.length){
+            this.graphsArray[this.graphQueue].runGraph(this.id)
             this.graphQueue += 1;
         }
         i += 1;

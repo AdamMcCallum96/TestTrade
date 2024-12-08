@@ -86,7 +86,9 @@ class GraphPage {
         integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
         crossorigin="anonymous">
         </script>
-        <script type="Text/Javascript">gm.displayGraph()</script>
+        <script type="Text/Javascript">
+        console.log("GRAPH MANAGER WORKING")
+        gm.displayGraph(1)</script>
     <?php }
     
     function displayGraph(){ ?>
