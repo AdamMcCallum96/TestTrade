@@ -16,7 +16,7 @@ class Graph {
     percentChange = [];
     childGraph
     
-    constructor(data, timeline, colours, type){
+    constructor(data, timeline, colours, type, stockIDs){
         // this.canvasWidth = canvasWidth;
         // this.canvasHeight = canvasHeight;
         this.data = data;
@@ -30,6 +30,7 @@ class Graph {
         // this.canvas = canvas;
         this.colours = colours;
         this.type = type;
+        this.stockIDs = stockIDs
 
         this.yScaleLabelsMin = 3 //the number of labels on the y axis minimum
         this.yScaleLabelsMax = 6 // the max
@@ -99,7 +100,11 @@ class Graph {
         //Slice the data based on the users request dates
         this.tempData = this.sliceByDate(this.tempData, startDate, endDate);
         this.tempTimeline = this.getTempTimeline();
-        
+        console.log("CALCULATE GRAPH S/E")
+        console.log(startDate)
+        console.log(endDate);
+        console.log(this.tempData);
+        console.log(this.tempTimeline);
         var max = this.getMaxData(this.tempData);
         var min = this.getMinData(this.tempData)
 
@@ -478,8 +483,9 @@ class Graph {
         canvas.font = font;
         canvas.textAlign = "left";
         canvas.fillStyle = "black"
-        canvas.fillText(this.tempData[i][0]['stockID'], (legendXBox +( boxWidth *2)),height + boxWidth -5);
-        
+        // canvas.fillText(this.tempData[i][0]['stockID'], (legendXBox +( boxWidth *2)),height + boxWidth -5);
+        console.log(this.stockIDs);
+        canvas.fillText(this.stockIDs[i], (legendXBox +( boxWidth *2)),height + boxWidth -5);
         canvas.stroke();
         canvas.closePath()
        }
@@ -908,8 +914,9 @@ class Graph {
         let start = this.startD;
         let end = this.endD;
         this.tempTimeline = [];
-
-    
+        console.log("IN TIMELINE");
+        console.log(start);
+        console.log(end);
         for(let i = 0; i < t.length; i++){
             let date = new Date(t[i]['stockDate'])
             if(date >= start && date <= end){
@@ -926,7 +933,131 @@ class Graph {
         console.log(graphPage
             
         )
+        var start = "2015-04-01";
+        var end = "2013-01-10";
+        this.calculateGraph(start, end, this.type)
         let graphPageID = document.getElementById(graphPage);
+        graphPageID.style.width = "100%"
+        if(this.type != "slider"){
+            //add interactive ui elements / date range
+            //on click functions
+            //styles in the style sheet
+            
+            let buttonsContainer = document.createElement('div');
+            buttonsContainer.classList.add("graphButtonsContainer")
+            graphPageID.insertAdjacentElement("beforeend",buttonsContainer);
+
+            let buttonNames = ['Max','5Y','Y','6M','3M','M','W']
+            let days = [36500,1825,365,182,91,31,7]
+
+            for(let i = 0; i < days.length; i++){   
+                //numbers of days * ms * s * m * h * d
+                days[i] =  1000 * 60 * 60 * 24 *days[i]
+            }
+            let graph = this;
+            for(let i = 0; i < buttonNames.length; i ++){
+                let buttonContainer = document.createElement('div');
+                buttonContainer.classList.add("graphButtonContainer");
+                
+                buttonsContainer.insertAdjacentElement("beforeend",buttonContainer);
+
+                let button = document.createElement('button')
+                button.textContent = buttonNames[i]
+                button.classList.add("graphButton");
+                button.addEventListener("click", function(){
+                    let endDate = new Date(graph.timeline[graph.timeline.length - 1]['stockDate']);
+                    let startDate = new Date(new Date().setTime(endDate.getTime() - days[i]))
+                    
+                    // console.log(startDate);
+                    // console.log(endDate);
+                    // startDate = startDate.toISOString().substring(0,10);
+                    endDate = endDate.toISOString().substring(0,10);
+                    
+                    let goodValue = 0;
+                    console.log(graph.timeline.length);
+                    // console.log(typeof graph.childGraph);
+                    // console.log(typeof graph.childGraph.type);
+                   
+                    // let arg2 = typeof graph.childGraph.type?
+
+                    if((typeof graph.childGraph != undefined) &&  (typeof graph.childGraph.type != undefined) &&(graph.childGraph.type == "slider")){ //graph.childGraph.type == "slider"){
+                    
+                    // if("lol" == true){
+                    console.log("lol");
+                    for(let x = 0; x < graph.timeline.length; x++){
+
+                            // console.log(startDate);
+                            // console.log(graph.timeline[x]);
+                            let currentDate = new Date(graph.timeline[x]['stockDate'])
+                        if(currentDate >= startDate){
+                            
+                            goodValue = x;
+                            break;
+                        }
+                    }
+                    //Move event
+                    //Change value before hand
+                    console.log(startDate)
+                    console.log("#########################################");
+                    console.log("GOOD VALUE")
+                    console.log(goodValue);
+                    startDate = startDate.toISOString().substring(0,10);
+                    graph.childGraph.startSlider.value = goodValue;
+                    
+                    graph.childGraph.endSlider.value = graph.timeline.length - 1
+
+                    graph.childGraph.startSlider.dispatchEvent(new Event('input', { bubbles: false}));
+                    graph.childGraph.endSlider.dispatchEvent(new Event('input', { bubbles: false}));
+                    
+                    //Click event
+                    graph.childGraph.startSlider.dispatchEvent(new Event('click', { bubbles: false}));
+                    graph.childGraph.endSlider.dispatchEvent(new Event('click', { bubbles: false}));
+                }
+                //     graph.startSlider.dispatchEvent(new Event('input', { bubbles: true}));
+                //     graph.endSlider.dispatchEvent(new Event('input', { bubbles: true}));
+                    
+                //    // Click event
+                //     graph.startSlider.dispatchEvent(new Event('click', { bubbles: true}));
+                //     graph.endSlider.dispatchEvent(new Event('click', { bubbles: true}));
+                    
+
+                    graph.calculateGraph(startDate, endDate, graph.type);
+                    graph.displayGraph(graph.type)
+                })
+                buttonContainer.insertAdjacentElement("beforeend", button);
+            }
+
+            // let buttonContainer = document.createElement('div');
+            // buttonContainer.classList.add("graphButtonContainer");
+            // buttonsContainer.insertAdjacentElement("beforeend",buttonContainer);
+
+            // let button = document.createElement('button')
+            // button.classList.add("graphButton");
+            // buttonContainer.insertAdjacentElement("beforeend", button);
+            
+            // buttonContainer = document.createElement('div');
+            // buttonContainer.classList.add("graphButtonContainer");
+            // buttonsContainer.insertAdjacentElement("beforeend",buttonContainer);
+            
+            // button = document.createElement('button')
+            // button.classList.add("graphButton");
+            // buttonContainer.insertAdjacentElement("beforeend", button);
+            
+            // buttonContainer = document.createElement('div');
+            // buttonContainer.classList.add("graphButtonContainer");
+            // buttonsContainer.insertAdjacentElement("beforeend", buttonContainer);
+            
+            // button = document.createElement('button')
+            // button.classList.add("graphButton");
+            // buttonContainer.insertAdjacentElement("beforeend", button);
+        }
+
+        this.canvasContainer = document.createElement('div');
+        this.canvasContainer.classList.add("canvasContainer");
+        graphPageID.insertAdjacentElement("beforeend",this.canvasContainer);
+        
+        
+        
         let graphElement = document.createElement('canvas');
 
         graphElement.id = this.canvasID;
@@ -934,36 +1065,95 @@ class Graph {
         this.canvas = graphElement 
         let canvas = this.canvas 
         console.log(graphPageID)
-        canvas.insertAdjacentElement("beforeend",graphPageID)
+        // canvas.insertAdjacentElement("beforeend",graphPageID)
+        //graphPageID.insertAdjacentElement("beforeend",canvas)
+        this.canvasContainer.insertAdjacentElement("beforeend",canvas)
 
-        var canvasParent = canvas.parentNode,
-        styles = getComputedStyle(canvasParent),
-            width = parseInt(styles.getPropertyValue("width"), 10),
-            height = parseInt(styles.getPropertyValue("height"), 10);
+        // let dataset = document.createElement('draw-canvas-data-set');
+        // dataset.setAttribute("style", "color: rbg(255, 255, 255);");
+        // dataset.height = "100px"
+        // dataset.width = "100px"
+
+        // this.canvasContainer.insertAdjacentElement("beforeend", dataset);
+
+        if(this.type == "slider"){
+
+            this.sliderOverlay = document.createElement('div');
+            this.sliderOverlay.id = "sliderOverlay";
+            //graphPageID.insertAdjacentElement("beforeend",this.sliderOverlay);
+            this.canvasContainer.insertAdjacentElement("beforeend",this.sliderOverlay);
+            this.generalOverlay = document.createElement('div');
+            this.generalOverlay.id = "generalOverlay"
+            this.sliderOverlay.insertAdjacentElement("beforeend",this.generalOverlay);
+
+            let ids = ["startOverlay","gapOverlay","endOverlay"]
+            
+            for(let i = 0; i < ids.length; i++){
+                this[ids[i]] = document.createElement('div')
+                this[ids[i]].id = ids[i];
+                this[ids[i]].classList.add('overlay3')
+                this.generalOverlay.insertAdjacentElement("beforeend",this[ids[i]]);
+
+            }
+
+            ids = ["startSlider","endSlider"];
+
+            this.graphSlidersClass = this.canvasID + 'graphSliders' 
+            for(let i = 0; i < ids.length; i ++){
+
+                this[ids[i]] = document.createElement("input");
+                this[ids[i]].setAttribute("type","range");
+                this[ids[i]].setAttribute("id",ids[i]);
+                this[ids[i]].setAttribute("class","graphSliders");
+                this[ids[i]].classList.add(this.graphSlidersClass);
+                this.sliderOverlay.insertAdjacentElement("beforeend",this[ids[i]]);
+
+            }
+            console.log("THISSSSSSSSSSSSSSSSSSSSSS")
+            console.log(this);
+            
+            
+        }
+        var canvasParent = canvas.parentNode;
+        console.log(canvas);
+        console.log(canvasParent);
+        let styles = getComputedStyle(canvasParent);
+            let width = parseInt(styles.getPropertyValue("width"), 10);
+            let height = parseInt(styles.getPropertyValue("height"), 10);
 
         canvas.width = width;
         canvas.height = width/2.66
-        canvasParent.setAttribute("style","height:"+s.height+"px");
-        if(type == "slider"){
-            s.height = width/10
+        canvasParent.setAttribute("style","height:"+canvas.height+"px");
+        
+        if(this.type == "slider"){
+            canvas.height = width/10
         }
 
         this.canvasWidth = width;
         this.canvasHeight = canvas.height;
+        let cview = canvas.getContext("2d");
+        cview.fillStyle = "white";
+        cview.fillRect(0,0,100,100);
+        //this.canvasContainer.height = this.canvasHeight;
+        this.canvasContainer.style.height = canvas.height;
+
+        console.log("THE CANVAS HEIGHT FOLLOWED BY THE CANVAS CONTAINER HEIGHT");
+        console.log(this.canvasHeight);
+        console.log(this.canvasContainer.height)
         this.setMarginsLRTBS(0.1,0.2,0.1,0.1,"percentile");
-        var start = "2015-04-01";
-        var end = "2013-01-10";
+        // var start = "2015-04-01";
+        // var end = "2013-01-10";
         console.log("lol");
-        this.calculateGraph(start, end, this.type)
+        //this.calculateGraph(start, end, this.type)
         console.log(this.type);
         this.displayGraph(this.type);
         
-        if(type == "slider"){
-            var sliders = document.getElementsByClassName("graphSliders");
-
+        if(this.type == "slider"){
+            var sliders = document.getElementsByClassName(this.graphSlidersClass);
+            // var sliders = 
             this.setSliderBounds(sliders);
         }
-        allGraphs.push(this.canvasID);
+        // allGraphs.push(this.canvasID);
         
         
     }
@@ -1072,20 +1262,30 @@ class Graph {
         //To be before the data or after the data, set it to the start
         if(startD > dataEndDate || startD < dataStartDate || startD > endD){
             startD = dataStartDate;
+            console.log("PASS1");
         }
         //If the user selects the end date to be before the data, or after the data
         //Set it to the end of the data
         if(endD > dataEndDate || endD < dataStartDate || endDate < startDate){
             endD = dataEndDate;
+            console.log("PASS2");
         }
-
+        console.log("PASS3");
         //Find the start date in the timeline
         this.startD = startD;
         this.endD = endD;
+
+        console.log(this.startD);
+        console.log(this.endD);
         function filterDates(arrayItem){
            var itemDate = new Date(arrayItem['stockDate']);
 
+           
            if(itemDate >= startD && itemDate <= endD){
+            // console.log("ItemDate: "+ itemDate);
+       
+            // console.log("StartD: " + startD)
+            // console.log("EndD: " + endD)
                return arrayItem
            }
         }
@@ -1095,6 +1295,9 @@ class Graph {
         for(let i = 0; i < stockArray.length; i++){
             stockArray[i] = stockArray[i].filter(filterDates);
         }
+        console.log("STOCK ARRAY");
+        console.log(stockArray);
+
     
         // console.log(stockArray);
        
@@ -1140,26 +1343,239 @@ class Graph {
 
     }
 
+    moveSlider(event){
+        console.log("LOL3");
+    }
+
+    clickSlider(event){
+        let originalID = event.target.id
+        let movedElement = document.getElementById(originalID);
+        console.log(event);
+
+
+        var start = this.startSlider
+        var end = this.endSlider
+        console.log(end);
+        console.log(start);
+        console.log(this);
+        console.log("WTF");
+        if(start ==  movedElement){
+            // console.log("START ELEMENT")
+            // console.log(start.value);
+            // console.log(end.value);
+            console.log(start.value >= end.value)
+            if(parseInt(start.value) >= parseInt(end.value)){
+            start.value = parse_Int(end.value) - 1;
+            }
+        } else {
+            // console.log("END ELEMENT")
+            // console.log(start.value);
+            // console.log(end.value);
+            if(parseInt(end.value) <= parseInt(start.value)){
+                end.value = parseInt(start.value) + 1;
+            }
+        }
+        console.log(allGraphs);
+
+       start = this.parentGraph.getDateFromIndex(start.value)
+       end = this.parentGraph.getDateFromIndex(end.value)
+    //    console.log("START START START:" + start)
+    //    console.log("END VALUE" + end)
+    this.parentGraph.calculateGraph(start, end, type)
+    this.parentGraph.displayGraph("default")
+    }
+
+    setParentGraph(parentGraph){
+        this.parentGraph = parentGraph
+    }
+
+    setChildGraph(childGraph){
+        this.childGraph = childGraph
+    }
+
     setSliderBounds(sliders){
         // console.log(slider);
         for(let i = 0; i < sliders.length; i++){
             var slider = sliders.item(i);
-            slider.addEventListener("click", clickSlider)
-            slider.addEventListener("input", moveSlider)
-            slider.setAttribute("min",0);
-            slider.setAttribute("max",this.tempTimeline.length - 1);
+            // slider.addEventListener("click", this.clickSlider)
+            var currentGraph = this;
+            slider.addEventListener("click", function(){
+               // clickSlider();
+               let originalID = event.target.id
+                let movedElement = document.getElementById(originalID);
+                console.log(event);
 
+
+                var start = currentGraph.startSlider
+                var end = currentGraph.endSlider
+                console.log(end);
+                console.log(start);
+                console.log(currentGraph);
+                console.log("WTF");
+                if(start ==  movedElement){
+                    // console.log("START ELEMENT")
+                    // console.log(start.value);
+                    // console.log(end.value);
+                    console.log(start.value >= end.value)
+                    if(parseInt(start.value) >= parseInt(end.value)){
+                    start.value = parse_Int(end.value) - 1;
+                    }
+                } else {
+                    // console.log("END ELEMENT")
+                    // console.log(start.value);
+                    // console.log(end.value);
+                    if(parseInt(end.value) <= parseInt(start.value)){
+                        end.value = parseInt(start.value) + 1;
+                    }
+                }
+                // console.log(allGraphs);
+
+            
+            start = currentGraph.parentGraph.getDateFromIndex(start.value)
+            end = currentGraph.parentGraph.getDateFromIndex(end.value)
+    //    console.log("START START START:" + start)
+    //    console.log("END VALUE" + end)
+        currentGraph.parentGraph.calculateGraph(start, end, currentGraph.type)
+        currentGraph.parentGraph.displayGraph("default")
+
+            })
+
+            slider.addEventListener("input", function(){
+                let originalID = event.target.id
+                let movedElement = document.getElementById(originalID);
+            
+                let startOverlay = currentGraph.startOverlay
+                let gapOverlay = currentGraph.gapOverlay
+                let endOverlay = currentGraph.endOverlay
+                let generalOverlay = currentGraph.generalOverlay
+    
+                // let startOverlay = document.getElementById("startOverlay");
+                // let gapOverlay = document.getElementById("gapOverlay");
+                // let endOverlay = document.getElementById("endOverlay");
+                // let generalOverlay = document.getElementById("generalOverlay");
+    
+    
+                var start = currentGraph.startSlider
+                var end = currentGraph.endSlider
+                // var start = document.getElementById("startSlider");
+                // var end = document.getElementById("endSlider");
+
+                let length = currentGraph.parentGraph.getLength()
+                //let length = allGraphs[0].getLength();
+
+
+                // I NEED TO FIND OUT WHY THESE TWO THINGS DO NOT EQUAL THE RIGHT AMOUNT.
+                console.log("START, MOVED ELEMENT")
+                console.log(start)
+                console.log(movedElement)
+                if(start ==  movedElement){
+                    
+                    console.log("VALUES");
+                    console.log(end.value);
+                    console.log(start.value);
+                    if(parseInt(start.value) >= parseInt(end.value)){
+                    start.value = end.value - 1;
+                    }
+    
+                    
+                } else {
+                    console.log("END ELEMENT")
+                    if(parseInt(end.value) <= parseInt(start.value)){
+                        end.value = parseInt(start.value) + 1;
+                    }
+                }
+                let standard = "z-index: 10;"
+                
+                
+                let sv = start.value;
+                let gv = parseInt(end.value) - parseInt(start.value);
+                let ev = (length - 1) - parseInt(sv) - gv;
+     
+              
+                
+                let overlayColour = "rgba(0, 99, 106, 0.57);"
+    
+                let sStyle = standard+"background-color: "+ overlayColour
+                let gStyle = standard;
+                let eStyle = standard+ "background-color: "+ overlayColour
+    
+                // let sStyle = "flex: " +sv+ "; "+ standard+"background-color: "+ overlayColour
+                // let gStyle = "flex: " +gv+ "; "+ standard;
+                // let eStyle = "flex: " +ev+ "; "+ standard+ "background-color: "+ overlayColour
+    
+                // let sStyle = "flex: " +sv+ "; "+ standard+"background-color: "+ overlayColour
+                // let gStyle = "flex: " +gv+ "; "+ standard;
+                // let eStyle = "flex: " +ev+ "; "+ standard+ "background-color: "+ overlayColour
+        
+                startOverlay.setAttribute("style",sStyle)
+                gapOverlay.setAttribute("style",gStyle)
+                endOverlay.setAttribute("style",eStyle)
+         
+                
+                let gov = currentGraph.generalOverlay
+                //let gov = document.getElementById("generalOverlay");
+                
+                gov.style.height= currentGraph.canvasHeight
+               let lOffset = currentGraph.leftOffset
+               let rOffset = currentGraph.rightOffset
+               let width = currentGraph.canvasWidth;
+               gov.style.width = currentGraph.canvasWidth - rOffset - lOffset;
+               
+        
+            //     gov.style.height= allGraphs[1].canvasHeight
+            //    let lOffset = allGraphs[1].leftOffset
+            //    let rOffset = allGraphs[1].rightOffset
+            //    let width = allGraphs[1].canvasWidth;
+            //    gov.style.width = allGraphs[1].canvasWidth - rOffset - lOffset;
+    
+               console.log("OFF SETS");
+               console.log(lOffset);
+               console.log(rOffset);
+
+
+    
+                generalOverlay.style.marginRight = rOffset;
+                generalOverlay.style.marginLeft = lOffset;
+    
+    
+    
+               startOverlay.style.width = sv / length * (width - lOffset - rOffset)
+               gapOverlay.style.width = gv / length * (width - lOffset - rOffset)
+               endOverlay.style.width = ev / length * (width - lOffset - rOffset)
+            
+               console.log("WIDTHS:" )
+               console.log("EV: "+ev+"SV: "+ sv+ "GV: " +gv);
+               console.log(ev + sv + ev)
+               if(endOverlay.style.width <= 1){
+                   endOverlay.style.width = 0;
+               }
+               console.log("COMBINED WIDTH: " + (parseInt(sv) +parseInt(gv) +parseInt(ev)))
+               console.log("END OVERLAY WIDTH")
+               console.log(sv);
+               console.log(gv);
+               console.log(ev);
+               console.log(ev / length * (width - lOffset - rOffset));
+               console.log("WIDTH: " + gapOverlay.style.width)
+               console.log("DOES THIS WORK");
+            //    console.log(allGraphs[1].canvasHeight)
+            //    console.log(allGraphs[1].canvasWidth)
+            })
+            slider.setAttribute("min",0);
+            //slider.setAttribute("max",this.tempTimeline.length - 1);
+            slider.setAttribute("max",currentGraph.tempTimeline.length - 1);
             if(i == 0){
                 slider.setAttribute("value",0)
             }
 
             if(i == 1){
-                slider.setAttribute("value",this.tempTimeline.length - 1)
+                //slider.setAttribute("value",this.tempTimeline.length - 1)
+                slider.setAttribute("value",currentGraph.tempTimeline.length - 1)
             }
 
             console.log("CANVAS WIDTH: " +this.canvasWidth);
             console.log("ACT CANVAS WIDTH: "+this.canvas.getAttribute("width"));
             var styles = "width: "+ this.canvasWidth +"px;";
+            styles += "height: "+ this.canvasHeight + "px;";
             styles += " padding-right: "+ this.rightOffset+"px;";
             styles += " padding-left: "+ this.leftOffset+"px;";
             styles += " margin: "+ "0px;";
@@ -1171,8 +1587,12 @@ class Graph {
             } else {
 
             }
-    
+            
             slider.setAttribute("style",styles)
+
+            // this.generalOverlay.height = this.canvas.height;
+            console.log(this)
+            console.log("GENERAL OVERLAY GRAPH OBJ ABOVE");
 
             console.log(slider);
         

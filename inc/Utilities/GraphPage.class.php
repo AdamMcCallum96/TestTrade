@@ -30,7 +30,7 @@ class GraphPage {
     </script>
     <?php }
 
-    function addGraph($data, $dates, $colours, $type, $id) { ?>
+    function addGraph($data, $dates, $colours, $type, $id, $stockIDs) { ?>
     
 
     
@@ -44,14 +44,23 @@ class GraphPage {
     {
     
         
-        let data = <?php $this->data = $data ;echo json_encode($this->data); ?>;
+        let data = <?php $this->data = $data ; echo json_encode($this->data); ?>;
         console.log("ADDGRAPH DATA:")
         console.log(data);
         let timeline = <?php echo json_encode($dates); ?>;
         let colours = <?php echo json_encode($colours); ?>;
         let type = <?php echo json_encode($type); ?>;
+        //let stockIDs = <?php //var_dump($stockIDs);//echo json_encode($stockIDs); ?>;
+        let stockIDs = <?php echo json_encode($stockIDs); ?>;
         {
-        var testGraph = new Graph(data, timeline, colours, type);
+        var parentGraph = gm.getLastGraph();
+        console.log("stockIDS")
+        console.log(stockIDs)
+        var testGraph = new Graph(data, timeline, colours, type, stockIDs);
+        if(type == "slider"){
+            testGraph.setParentGraph(parentGraph);
+            parentGraph.setChildGraph(testGraph)
+        }
         
         console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         console.log("testGraph")
@@ -68,13 +77,30 @@ class GraphPage {
     </script>
     <?php }
 
-    function initGraphManager($id) { ?>
+    function initGraphManager($id) { 
+        var_dump($id);
+        
+        $test = $id;
+        var_dump($test);
+        var_dump("second dump");
+        // $test = "brosef";
+        var_dump($test);
+        var_dump(json_encode($test));
+        $result = json_encode($test);
+        var_dump($result);
+        var_dump(json_decode($test));
+        ?>
          <script src="inc/Utilities/js/Graph.js"></script>
         <script src="inc/Utilities/js/GraphManager.js"></script>
         <script type="Text/JavaScript">
-            var gm = new GraphManager(<?php echo json_encode($id)?>);
+            var gm = new GraphManager(<?php echo json_encode($id);?>);
         </script>
-        <div id="<?php echo json_encode($id)?>" class="graphManager"></div>
+        <div id="wtf"></div>
+        
+        <div class="graphManager" id="<?php echo $id; ?>">what</div> 
+        <div id="<?php echo $test; ?>">lol</div>
+        <div id="lol">lol</div>
+        <!-- <div id="orange" class="graphManager"></div> -->
     <?php }
     function showGraph() { ?>
 
@@ -205,7 +231,7 @@ class GraphPage {
         function moveSlider(event){
             let originalID = event.target.id
             let movedElement = document.getElementById(originalID);
-            // console.log(event);
+ 
 
             let startOverlay = document.getElementById("startOverlay");
             let gapOverlay = document.getElementById("gapOverlay");
@@ -213,17 +239,13 @@ class GraphPage {
             let generalOverlay = document.getElementById("generalOverlay");
 
 
-            //.log(originalID)
+        
             var start = document.getElementById("startSlider");
             var end = document.getElementById("endSlider");
             let length = allGraphs[0].getLength();
-            // console.log(start);
-            // console.log("WTF");
+            
             if(start ==  movedElement){
-                // console.log("START ELEMENT")
-                
-                // console.log(start.value);
-                // console.log(end.value);
+               
                 if(parseInt(start.value) >= parseInt(end.value)){
                 start.value = end.value - 1;
                 }
@@ -237,13 +259,11 @@ class GraphPage {
             }
             let standard = "z-index: 10;"
             
-            console.log("EQUATION");
-            console.log(end.value - start.value);
-            console.log("LENGTH"+ length)
+            
             let sv = start.value;
             let gv = parseInt(end.value) - parseInt(start.value);
             let ev = length - parseInt(sv) - gv;
-            console.log(length);
+ 
 
             
             let overlayColour = "rgba(0, 99, 106, 0.57);"
@@ -259,7 +279,7 @@ class GraphPage {
             // let sStyle = "flex: " +sv+ "; "+ standard+"background-color: "+ overlayColour
             // let gStyle = "flex: " +gv+ "; "+ standard;
             // let eStyle = "flex: " +ev+ "; "+ standard+ "background-color: "+ overlayColour
-            console.log(sStyle);
+    
             startOverlay.setAttribute("style",sStyle)
             gapOverlay.setAttribute("style",gStyle)
             endOverlay.setAttribute("style",eStyle)

@@ -9,6 +9,10 @@ class GraphManager {
         this.graphsArray = [];
     }
 
+    getLastGraph(){
+        return this.graphsArray[this.graphsArray.length - 1];
+    }
+
     addGraph(graph){
        // const zeroPad = (num, places) => String(num).padStart(places, '0')
 

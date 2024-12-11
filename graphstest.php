@@ -41,6 +41,10 @@ for($x = 0; $x < count($data); $x ++){
     }
 }
 
+// for($n = 0; $n < count($stockIDArray); $n){
+//     $stockIDArray[$n] = $stockIDArray[$n]->jsonSerialize();
+// }
+// $stockIDArray = $stockIDArray->jsonSerialize();
 $colours = ["#FF0000",'#008800',"#0000FF"];
 //$colours = ["#FF0000",'#00800',"#0000FF"];
 
@@ -55,21 +59,33 @@ $colours = ["#FF0000",'#008800',"#0000FF"];
 //flexibility with regard to what content can be displayed inbetween
 //different graphs/datasets
 PageFunctionality::nav();
-$gp = new GraphPage($data, $dates,$colours, "default","graphid1");
+$gp = new GraphPage($data, $dates,$colours, "default","graphid1", $stockIDArray);
 // $gp.initGraphManager()
 // $gp.addGraph();
-$gp->initGraphManager("orange");
-$gp->addGraph($data, $dates, $colours, "default","lol");
+$lol = "nice";
+var_dump($stockIDArray);
+$gp->initGraphManager($lol);
+$gp->addGraph($data, $dates, $colours, "default","lol", $stockIDArray);
 $gp->showGraph();
 
 // var_dump($gp->getData());
 // $gp->initJSProperties();
 // $gp->displayGraph();
 // $gl = new GraphPage($data, $dates, $colours, "slider","graphid2");
-$gp->addGraph($data, $dates, $colours, "slider","lol");
+$gp->addGraph($data, $dates, $colours, "slider","lol",$stockIDArray);
 $gp->showGraph();
 
+$gp->addGraph($data, $dates, $colours, "default","lol",$stockIDArray);
+$gp->showGraph();
 
+$gp->addGraph($data, $dates, $colours, "slider","lol", $stockIDArray);
+$gp->showGraph();
+//$gp->displayGraph();
+
+$gp->addGraph($data, $dates, $colours, "default","lol",$stockIDArray);
+$gp->showGraph();
+$gp->addGraph($data, $dates, $colours, "default","lol",$stockIDArray);
+$gp->showGraph();
 // $gs = new GraphPage($data, $dates, $colours, "slider","graphid2");
 // $gs->displayGraph();
 
