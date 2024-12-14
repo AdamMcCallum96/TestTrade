@@ -20,16 +20,17 @@ class Graph {
         // this.canvasWidth = canvasWidth;
         // this.canvasHeight = canvasHeight;
         this.data = data;
-        console.log("DATA IN CONST");
+        // console.log("DATA IN CONST");
         
-        console.log(data);
-        console.log(this.data);
-        console.log("TIMELINE");
-        console.log(timeline);
+        // console.log(data);
+        // console.log(this.data);
+        // console.log("TIMELINE");
+        // console.log(timeline);
         this.timeline = timeline;
         // this.canvas = canvas;
         this.colours = colours;
         this.type = type;
+        this.dataType = "percentage"; //default or percentage
         this.stockIDs = stockIDs
 
         this.yScaleLabelsMin = 3 //the number of labels on the y axis minimum
@@ -100,16 +101,31 @@ class Graph {
         //Slice the data based on the users request dates
         this.tempData = this.sliceByDate(this.tempData, startDate, endDate);
         this.tempTimeline = this.getTempTimeline();
+        console.log(this.tempData);
+        this.convertToDataType(this.tempData, this.dataType)
+        console.log(this.tempData);
+        console.log("TEMPDATA BREAKPOINT");
+
         console.log("CALCULATE GRAPH S/E")
         console.log(startDate)
         console.log(endDate);
-        console.log(this.tempData);
+        
         console.log(this.tempTimeline);
-        var max = this.getMaxData(this.tempData);
-        var min = this.getMinData(this.tempData)
+        if(this.dataType != "percentage"){
+            var max = this.getMaxData(this.tempData, this.dataType);
+            //var min = this.getMinData(this.tempData)
+            var min = this.getMinData(this.tempData)
+        } else {
+
+            var max = this.getMaxData(this.tempData, this.dataType);
+            // 0 percent of starting value is min
+            // var min = this.getMinData(this.tempData)
+            var min = 0; 
+        }
+        
 
         var difference = max-min;
-       
+       console.log("MAX:" + max + "MIN:" + min)
         var maxSharePrice = 10000000000
         var lowestSharePrice = 0.0001;
         var graphScales = new Array();
@@ -129,6 +145,7 @@ class Graph {
            // console.log(yLabels);
             //The calculated graph scale will always be lower or equal to the actual scale
             var calculatedYScale = difference/(yLabels-1);
+            console.log("CALC:" + calculatedYScale+ " = " + difference + "/("+ yLabels+"-1)")
             //console.log(calculatedYScale);
             
             //the actual Y scale should always be slightly bigger than the calculated one
@@ -161,6 +178,8 @@ class Graph {
 
             
         }
+        console.log("Y SCALES:");
+        console.log(this.validYScale);
         //Finding error percentage for valid data
         for(let x = 0; x < this.validYScale.length; x++){
 
@@ -213,6 +232,8 @@ class Graph {
            this.tempDataMaxLengths[x] = this.tempData[x].length;
            
        }
+       console.log("PERCENT CHANGE")
+       console.log(this.percentChange)
        return;
        
        var canvas = this.canvas.getContext('2d');
@@ -388,10 +409,10 @@ class Graph {
         while(currentYValue <= this.graphMax){
             //Percent of total graph
             
-            console.log("BOTTOM:" +this.graphBottom)
-            console.log("YVALUE: " + currentYValue );
-            console.log("YSCALE: " + this.graphYScale);
-            console.log("my CALC: "+ (2.2 + 0.2) )
+            // console.log("BOTTOM:" +this.graphBottom)
+            // console.log("YVALUE: " + currentYValue );
+            // console.log("YSCALE: " + this.graphYScale);
+            // console.log("my CALC: "+ (2.2 + 0.2) )
             currentYValue = Math.floor(currentYValue * intMultiplier) / intMultiplier;
 
 
@@ -416,6 +437,7 @@ class Graph {
 
 
             currentYValue += this.graphYScale;
+            // console.log(this.graphYScale);
             console.log("CURRENY Y VALUE=" + currentYValue);
         }
 
@@ -651,7 +673,9 @@ class Graph {
 
 
             currentYValue += this.graphYScale;
-            console.log("CURRENY Y VALUE=" + currentYValue);
+            
+            // console.log(this.graphYScale);
+            // console.log("CURRENY Y VALUE=" + currentYValue);
         }
 
         canvas.moveTo(this.coordXLeft - this.labelLineLength, this.coordYTop)
@@ -936,6 +960,7 @@ class Graph {
         var start = "2015-04-01";
         var end = "2013-01-10";
         this.calculateGraph(start, end, this.type)
+        // window.stop();
         let graphPageID = document.getElementById(graphPage);
         graphPageID.style.width = "100%"
         if(this.type != "slider"){
@@ -979,9 +1004,9 @@ class Graph {
                     // console.log(typeof graph.childGraph.type);
                    
                     // let arg2 = typeof graph.childGraph.type?
-
-                    if((typeof graph.childGraph != undefined) &&  (typeof graph.childGraph.type != undefined) &&(graph.childGraph.type == "slider")){ //graph.childGraph.type == "slider"){
-                    
+                    console.log("Child graph test")
+                    if((typeof graph.childGraph != undefined) &&  (typeof graph.childGraph?.type != undefined) &&(graph.childGraph?.type == "slider")){ //graph.childGraph.type == "slider"){
+                        console.log("pass child graph test")
                     // if("lol" == true){
                     console.log("lol");
                     for(let x = 0; x < graph.timeline.length; x++){
@@ -1022,7 +1047,7 @@ class Graph {
                     
 
                     graph.calculateGraph(startDate, endDate, graph.type);
-                    graph.displayGraph(graph.type)
+                    graph.displayGraph(graph.dataType)
                 })
                 buttonContainer.insertAdjacentElement("beforeend", button);
             }
@@ -1075,9 +1100,9 @@ class Graph {
         // dataset.width = "100px"
 
         // this.canvasContainer.insertAdjacentElement("beforeend", dataset);
-
+        console.log("TYPE TYPE TYPE>" + this.type)
         if(this.type == "slider"){
-
+            console.log("IS SLIDER");
             this.sliderOverlay = document.createElement('div');
             this.sliderOverlay.id = "sliderOverlay";
             //graphPageID.insertAdjacentElement("beforeend",this.sliderOverlay);
@@ -1202,20 +1227,71 @@ class Graph {
 
     
     //ALL OF THESE FUNCTIONS PURELY FOR COMPLEX CALCS
-    getMaxData(passedData){
+    convertToDataType(data, dataType){
+        if(dataType == "default"){
+            // do nothing
+            return;
+        }
+
+        if(dataType == "percentile"){
+
+        }
+
+        for(let i = 0; i < data.length; i++){
+            
+            let rows = data[i];
+            var startValue = rows[0]['stockValue']
+            rows[0]['stockValue'] = 1;
+            
+            for(let k = 1; k < rows.length; k++){
+                rows[k]['stockValue'] = rows[k]['stockValue']  / startValue
+                if(k < 10){
+                    console.log(rows[k]['stockValue']  / startValue)
+                }
+                
+               
+            }
+        }
+
+        return;
+    }
+    
+
+    getMaxData(passedData, dataType){
         var number = null;
+
+        // dataType = "default;"
         for(let i = 0; i < passedData.length; i++){
             
             let rows = passedData[i];
+            // console.log("DATATYPE:" + dataType);
             for(let k = 0; k < rows.length; k++){
-                if(number != null){
                 
-                    if(number < rows[k]['stockValue']){
-                        number = rows[k]['stockValue'];
+                if(dataType == "default"){
+                    // console.log("PASS DEFAULT")
+                    if(number != null){
+                    
+                        if(number < rows[k]['stockValue']){
+                            number = rows[k]['stockValue'];
+                        }
+                    } else {
+                        number = rows[k]['stockValue']
                     }
-                } else {
-                    number = rows[k]['stockValue']
                 }
+
+                if(dataType == "percentage"){
+                    // console.log("PASS PERC")
+                    if(number != null){
+                        
+                        if(number < rows[k]['stockValue']){
+                            number = rows[k]['stockValue'];
+                        }
+                    } else {
+                        number = rows[k]['stockValue']
+                    }
+                }
+                
+                
             }
         }
 
