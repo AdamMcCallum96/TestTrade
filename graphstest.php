@@ -63,7 +63,9 @@ $gp = new GraphPage($data, $dates,$colours, "default","graphid1", $stockIDArray)
 // $gp.initGraphManager()
 // $gp.addGraph();
 $lol = "nice";
-var_dump($stockIDArray);
+?>
+<!-- <div style="width: 50%"> -->
+<?php
 $gp->initGraphManager($lol);
 $gp->addGraph($data, $dates, $colours, "default","lol", $stockIDArray);
 $gp->showGraph();
@@ -86,6 +88,10 @@ $gp->addGraph($data, $dates, $colours, "default","lol",$stockIDArray);
 $gp->showGraph();
 $gp->addGraph($data, $dates, $colours, "default","lol",$stockIDArray);
 $gp->showGraph();
+?>
+<!-- </div> -->
+
+<?php
 // $gs = new GraphPage($data, $dates, $colours, "slider","graphid2");
 // $gs->displayGraph();
 

@@ -30,7 +30,7 @@ class Graph {
         // this.canvas = canvas;
         this.colours = colours;
         this.type = type;
-        this.dataType = "percentage"; //default or percentage
+        this.dataType = "default"; //default, percentage or percentageByPeriod
         this.stockIDs = stockIDs
 
         this.yScaleLabelsMin = 3 //the number of labels on the y axis minimum
@@ -95,13 +95,20 @@ class Graph {
         
         console.log("THIS DATA");
         console.log(this.data);
-        this.tempData = this.data.slice(0);
-
-        console.log(this.data);
+        this.tempData = [];
+        // this.tempData = this.data.slice(0);
+        this.tempData = JSON.parse(JSON.stringify(this.data));
+        console.log("TEMPDATA AFTER SLICE")
+        console.log(this.tempData)
+        // console.log(this.data);
         //Slice the data based on the users request dates
         this.tempData = this.sliceByDate(this.tempData, startDate, endDate);
         this.tempTimeline = this.getTempTimeline();
         console.log(this.tempData);
+
+        if(this.dataType == "percentageByPeriod"){
+            this.filterDays()
+        }
         this.convertToDataType(this.tempData, this.dataType)
         console.log(this.tempData);
         console.log("TEMPDATA BREAKPOINT");
@@ -111,7 +118,7 @@ class Graph {
         console.log(endDate);
         
         console.log(this.tempTimeline);
-        if(this.dataType != "percentage"){
+        if(this.dataType == "default" || this.dataType == "percentageByPeriod"){
             var max = this.getMaxData(this.tempData, this.dataType);
             //var min = this.getMinData(this.tempData)
             var min = this.getMinData(this.tempData)
@@ -123,9 +130,15 @@ class Graph {
             var min = 0; 
         }
         
+        // psutil.Process.resume()
+        
+    
 
         var difference = max-min;
        console.log("MAX:" + max + "MIN:" + min)
+       if(this.dataType == "percentageByPeriod"){
+        //    debugger;
+       }
         var maxSharePrice = 10000000000
         var lowestSharePrice = 0.0001;
         var graphScales = new Array();
@@ -180,6 +193,7 @@ class Graph {
         }
         console.log("Y SCALES:");
         console.log(this.validYScale);
+        
         //Finding error percentage for valid data
         for(let x = 0; x < this.validYScale.length; x++){
 
@@ -519,6 +533,11 @@ class Graph {
     }
 
     displayData(canvas){
+        console.log("DISPLAY DATA TEMPDATA");
+        console.log(this.tempData)
+
+        
+
         for(let i = 0; i < this.tempTimeline.length; i++){
            
             //Draw Data
@@ -959,7 +978,7 @@ class Graph {
         )
         var start = "2015-04-01";
         var end = "2013-01-10";
-        this.calculateGraph(start, end, this.type)
+        this.calculateGraph(start, end, this.dataType)
         // window.stop();
         let graphPageID = document.getElementById(graphPage);
         graphPageID.style.width = "100%"
@@ -967,10 +986,63 @@ class Graph {
             //add interactive ui elements / date range
             //on click functions
             //styles in the style sheet
-            
+            let graph = this;
             let buttonsContainer = document.createElement('div');
             buttonsContainer.classList.add("graphButtonsContainer")
             graphPageID.insertAdjacentElement("beforeend",buttonsContainer);
+
+            let selectOptions = ['Stock Price','Percent Change','Percent By Period'];
+            let value = ['default','percentage','percentageByPeriod'];
+            
+            let buttonContainer = document.createElement('div');
+                buttonContainer.classList.add("graphButtonContainer");
+                buttonsContainer.insertAdjacentElement("beforeend",buttonContainer);
+           
+                //Add select box and its items
+            let selectBox = document.createElement('select')
+                selectBox.classList.add("graphButton")
+                selectBox.classList.add("graphSelectButton")
+                buttonContainer.insertAdjacentElement("beforeend",selectBox)
+
+                selectBox.addEventListener('input',function(){
+
+                    let value = selectBox.value
+                    if(value == "default"){ 
+                        graph.dataType = "default"
+                        // graph.childGraph.dataType = "default"
+                    }
+                    if(value == "percentage"){ 
+                        graph.dataType = "percentage"
+                        // graph.childGraph.dataType = "percentage"
+                    } 
+
+                    if(value == "percentageByPeriod"){
+                        graph.dataType = "percentageByPeriod";
+                    }
+
+                    let start = graph.startD//graph.getDateFromIndex(graph.endSlider.value)
+                    let end = graph.endD//graph.getDateFromIndex(graph.startSlider.value)
+                    graph.calculateGraph(start, end, graph.dataType)
+                    graph.displayGraph(graph.type);
+                    graph.childGraph.calculateGraph(start, end, graph.dataType)
+                    graph.childGraph.displayGraph(graph.childGraph.type);
+                    window.alert(graph.childGraph.type)
+                    
+                    
+                })
+            for(let i = 0; i < selectOptions.length; i++){
+                
+                
+                let option = document.createElement('option')
+                option.textContent = selectOptions[i]
+                option.value = value[i];
+                
+                selectBox.insertAdjacentElement("beforeend",option)
+
+                
+
+            }
+
 
             let buttonNames = ['Max','5Y','Y','6M','3M','M','W']
             let days = [36500,1825,365,182,91,31,7]
@@ -979,7 +1051,7 @@ class Graph {
                 //numbers of days * ms * s * m * h * d
                 days[i] =  1000 * 60 * 60 * 24 *days[i]
             }
-            let graph = this;
+            // let graph = this;
             for(let i = 0; i < buttonNames.length; i ++){
                 let buttonContainer = document.createElement('div');
                 buttonContainer.classList.add("graphButtonContainer");
@@ -989,9 +1061,11 @@ class Graph {
                 let button = document.createElement('button')
                 button.textContent = buttonNames[i]
                 button.classList.add("graphButton");
+                button.classList.add("graphDateButton");
                 button.addEventListener("click", function(){
                     let endDate = new Date(graph.timeline[graph.timeline.length - 1]['stockDate']);
                     let startDate = new Date(new Date().setTime(endDate.getTime() - days[i]))
+                    
                     
                     // console.log(startDate);
                     // console.log(endDate);
@@ -1047,7 +1121,7 @@ class Graph {
                     
 
                     graph.calculateGraph(startDate, endDate, graph.type);
-                    graph.displayGraph(graph.dataType)
+                    graph.displayGraph(graph.type)
                 })
                 buttonContainer.insertAdjacentElement("beforeend", button);
             }
@@ -1162,13 +1236,10 @@ class Graph {
         //this.canvasContainer.height = this.canvasHeight;
         this.canvasContainer.style.height = canvas.height;
 
-        console.log("THE CANVAS HEIGHT FOLLOWED BY THE CANVAS CONTAINER HEIGHT");
-        console.log(this.canvasHeight);
-        console.log(this.canvasContainer.height)
         this.setMarginsLRTBS(0.1,0.2,0.1,0.1,"percentile");
         // var start = "2015-04-01";
         // var end = "2013-01-10";
-        console.log("lol");
+  
         //this.calculateGraph(start, end, this.type)
         console.log(this.type);
         this.displayGraph(this.type);
@@ -1199,6 +1270,7 @@ class Graph {
             console.log("default4")
             this.displayXLabels(canvas)
             console.log("default5")
+            console.log(this.dataType);
             this.displayYLabels(canvas)
         }
 
@@ -1233,29 +1305,143 @@ class Graph {
             return;
         }
 
-        if(dataType == "percentile"){
-
-        }
-
-        for(let i = 0; i < data.length; i++){
+        if(dataType == "percentage"){
+            for(let i = 0; i < data.length; i++){
             
-            let rows = data[i];
-            var startValue = rows[0]['stockValue']
-            rows[0]['stockValue'] = 1;
-            
-            for(let k = 1; k < rows.length; k++){
-                rows[k]['stockValue'] = rows[k]['stockValue']  / startValue
-                if(k < 10){
-                    console.log(rows[k]['stockValue']  / startValue)
+                let rows = data[i];
+                if(rows.length >= 1){
+                    var startValue = rows[0]['stockValue']
+                    rows[0]['stockValue'] = 1;
                 }
                 
-               
+                
+                for(let k = 1; k < rows.length; k++){
+                    rows[k]['stockValue'] = rows[k]['stockValue']  / startValue
+                    if(k < 10){
+                        console.log(rows[k]['stockValue']  / startValue)
+                    }
+                    
+                   
+                }
             }
         }
+        
+        if(dataType == "percentageByPeriod"){
+
+            
+        // for(this.tempTimeline.length; i++){
+
+        // }
+
+
+
+            for(let i = 0; i < data.length; i++){
+            
+                let rows = data[i];
+                // if(rows.length >= 1){
+                //     var startValue = rows[0]['stockValue']
+                //     rows[0]['stockValue'] = 0;
+                // }
+                
+                let savedNextValue = 0;
+                savedNextValue = rows[0]['stockValue']
+                let percent = 0;
+                for(let k = 1; k < rows.length; k++){
+                    if(k < 30){
+                        
+                        console.log(rows[k]['stockValue'] +" "+ rows[k-1]['stockValue'] + "K Num: " + k + "Next V"+ savedNextValue)
+                        console.log((rows[k]['stockValue'] * 1  / savedNextValue) );
+                        console.log()
+                    }
+
+                    percent = 1 + (-rows[k]['stockValue'] * 1  / savedNextValue)
+                    savedNextValue = rows[k]['stockValue']
+                    rows[k]['stockValue']  = percent;
+                    
+                    // rows[k]['stockValue'] = 1 + (-rows[k]['stockValue']  / rows[k-1]['stockValue'])
+                    // if(k < 10){
+                    //     // console.log(rows[k]['stockValue'])
+                    // }
+                    
+                   
+                }
+
+                if(rows.length >= 1){
+                    var startValue = rows[0]['stockValue']
+                    savedNextValue = rows[0]['stockValue']
+                    rows[0]['stockValue'] = 0;
+                }
+                // debugger;
+            }
+        }
+        
 
         return;
     }
     
+    filterDays(){
+
+        let pointsToPlot = 50;
+        let daysPerPlot = 0;
+
+        if(this.tempTimeline <= pointsToPlot){
+            daysPerPlot = 1;
+        } else {
+            daysPerPlot = 1 + parseInt(this.tempTimeline.length / pointsToPlot)
+        }
+        let cursor = [];
+        let maxLength = [];
+        let startedLine = []; 
+        let numberOfSplices = []
+        for(let x = 0; x < this.tempData.length; x++){
+            cursor[x] = daysPerPlot * 2;
+            maxLength[x] = this.tempData[x].length;
+            startedLine[x] = false;
+            numberOfSplices[x] = 0
+            
+            
+        }
+
+
+        console.log("WTF LOL");
+        console.log(this.tempTimeline);
+        console.log(this.tempTimeline[5056]);
+        for(let i = this.tempTimeline.length - 1; i >= 0; i--){
+           
+            //Draw Data
+            for(let x = 0; x < this.tempData.length; x++){
+                let stockArray = this.tempData[x]
+            
+                cursor[x] += 1
+                console.log(i);
+                if(cursor[x] < maxLength[x] && this.tempTimeline[i]['stockDate'] == stockArray[cursor[x]]['stockDate']){
+                    
+                    let value = stockArray[cursor[x]]['stockValue'];
+                    //probably need to have cursor start at maxLength
+                    
+                    if(cursor[x] != 0 || startedLine[x] == false){
+                        stockArray[x].splice(maxLength[x]-1-numberOfSplices[x],1)
+                        numberOfSplices[x] += 1;
+                        startedLine[x] = true;
+                    } else {
+                        cursor = daysPerPlot;
+                        //stockArray[cursor[x]]['stockValue'];
+                    }
+              
+                  
+                
+                    
+                   
+                   
+                   
+                    cursor[x] = cursor[x] + 1;
+                    // console.log(this.tempDataCursors);
+                } else {
+
+                }
+            }
+        }
+    }
 
     getMaxData(passedData, dataType){
         var number = null;
@@ -1266,30 +1452,38 @@ class Graph {
             let rows = passedData[i];
             // console.log("DATATYPE:" + dataType);
             for(let k = 0; k < rows.length; k++){
-                
-                if(dataType == "default"){
-                    // console.log("PASS DEFAULT")
-                    if(number != null){
-                    
-                        if(number < rows[k]['stockValue']){
-                            number = rows[k]['stockValue'];
-                        }
-                    } else {
-                        number = rows[k]['stockValue']
-                    }
-                }
-
-                if(dataType == "percentage"){
-                    // console.log("PASS PERC")
-                    if(number != null){
+                if(number != null){
                         
-                        if(number < rows[k]['stockValue']){
-                            number = rows[k]['stockValue'];
-                        }
-                    } else {
-                        number = rows[k]['stockValue']
+                    if(number < rows[k]['stockValue']){
+                        number = rows[k]['stockValue'];
                     }
+                } else {
+                    number = rows[k]['stockValue']
                 }
+        
+                // if(dataType == "default"){
+                  
+                //     if(number != null){
+                    
+                //         if(number < rows[k]['stockValue']){
+                //             number = rows[k]['stockValue'];
+                //         }
+                //     } else {
+                //         number = rows[k]['stockValue']
+                //     }
+                // }
+
+                // if(dataType == "percentage"){
+                //     // console.log("PASS PERC")
+                //     if(number != null){
+                        
+                //         if(number < rows[k]['stockValue']){
+                //             number = rows[k]['stockValue'];
+                //         }
+                //     } else {
+                //         number = rows[k]['stockValue']
+                //     }
+                // }
                 
                 
             }
@@ -1511,7 +1705,7 @@ class Graph {
             end = currentGraph.parentGraph.getDateFromIndex(end.value)
     //    console.log("START START START:" + start)
     //    console.log("END VALUE" + end)
-        currentGraph.parentGraph.calculateGraph(start, end, currentGraph.type)
+        currentGraph.parentGraph.calculateGraph(start, end, currentGraph.parentGraph.type)
         currentGraph.parentGraph.displayGraph("default")
 
             })
@@ -1541,14 +1735,14 @@ class Graph {
 
 
                 // I NEED TO FIND OUT WHY THESE TWO THINGS DO NOT EQUAL THE RIGHT AMOUNT.
-                console.log("START, MOVED ELEMENT")
-                console.log(start)
-                console.log(movedElement)
+                // console.log("START, MOVED ELEMENT")
+                // console.log(start)
+                // console.log(movedElement)
                 if(start ==  movedElement){
                     
-                    console.log("VALUES");
-                    console.log(end.value);
-                    console.log(start.value);
+                    // console.log("VALUES");
+                    // console.log(end.value);
+                    // console.log(start.value);
                     if(parseInt(start.value) >= parseInt(end.value)){
                     start.value = end.value - 1;
                     }
@@ -1604,9 +1798,9 @@ class Graph {
             //    let width = allGraphs[1].canvasWidth;
             //    gov.style.width = allGraphs[1].canvasWidth - rOffset - lOffset;
     
-               console.log("OFF SETS");
-               console.log(lOffset);
-               console.log(rOffset);
+            //    console.log("OFF SETS");
+            //    console.log(lOffset);
+            //    console.log(rOffset);
 
 
     
@@ -1619,20 +1813,20 @@ class Graph {
                gapOverlay.style.width = gv / length * (width - lOffset - rOffset)
                endOverlay.style.width = ev / length * (width - lOffset - rOffset)
             
-               console.log("WIDTHS:" )
-               console.log("EV: "+ev+"SV: "+ sv+ "GV: " +gv);
-               console.log(ev + sv + ev)
+            //    console.log("WIDTHS:" )
+            //    console.log("EV: "+ev+"SV: "+ sv+ "GV: " +gv);
+            //    console.log(ev + sv + ev)
                if(endOverlay.style.width <= 1){
                    endOverlay.style.width = 0;
                }
-               console.log("COMBINED WIDTH: " + (parseInt(sv) +parseInt(gv) +parseInt(ev)))
-               console.log("END OVERLAY WIDTH")
-               console.log(sv);
-               console.log(gv);
-               console.log(ev);
-               console.log(ev / length * (width - lOffset - rOffset));
-               console.log("WIDTH: " + gapOverlay.style.width)
-               console.log("DOES THIS WORK");
+            //    console.log("COMBINED WIDTH: " + (parseInt(sv) +parseInt(gv) +parseInt(ev)))
+            //    console.log("END OVERLAY WIDTH")
+            //    console.log(sv);
+            //    console.log(gv);
+            //    console.log(ev);
+            //    console.log(ev / length * (width - lOffset - rOffset));
+            //    console.log("WIDTH: " + gapOverlay.style.width)
+            //    console.log("DOES THIS WORK");
             //    console.log(allGraphs[1].canvasHeight)
             //    console.log(allGraphs[1].canvasWidth)
             })
@@ -1648,8 +1842,8 @@ class Graph {
                 slider.setAttribute("value",currentGraph.tempTimeline.length - 1)
             }
 
-            console.log("CANVAS WIDTH: " +this.canvasWidth);
-            console.log("ACT CANVAS WIDTH: "+this.canvas.getAttribute("width"));
+            // console.log("CANVAS WIDTH: " +this.canvasWidth);
+            // console.log("ACT CANVAS WIDTH: "+this.canvas.getAttribute("width"));
             var styles = "width: "+ this.canvasWidth +"px;";
             styles += "height: "+ this.canvasHeight + "px;";
             styles += " padding-right: "+ this.rightOffset+"px;";
@@ -1667,10 +1861,10 @@ class Graph {
             slider.setAttribute("style",styles)
 
             // this.generalOverlay.height = this.canvas.height;
-            console.log(this)
-            console.log("GENERAL OVERLAY GRAPH OBJ ABOVE");
+            // console.log(this)
+            // console.log("GENERAL OVERLAY GRAPH OBJ ABOVE");
 
-            console.log(slider);
+            // console.log(slider);
         
             
         }

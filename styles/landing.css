@@ -513,6 +513,7 @@ canvas {
     /* height: 150px; */
 }
 
+
 .graphButtonContainer {
     /* flex: 1; */
     /* margin-left: 10px;
@@ -526,14 +527,34 @@ canvas {
 
 .graphButton {
     /* display: inline-block; */
+    /* all: unset; */
     height: 50px;
-    width: 100px;
+    /* width: 100px; */
     margin: auto;
     font-weight: 700;
     font-size: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 5px;
+    /* padding: 20px; */
     /* margin-right: 0px;
     margin-left: 0px; */
 }
+
+.graphDateButton:focus {
+    background-color:rgb(194, 194, 194);
+    /* border: none; */
+    /* border-color: cadetblue; */
+    outline: none;
+}
+
+.graphSelectButton:focus {
+    /* background-color: green; */
+    /* border: none; */
+    outline: none;
+}
+
+
 
 canvas {
     border-width: 0px;
