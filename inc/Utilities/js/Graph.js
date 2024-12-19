@@ -112,7 +112,7 @@ class Graph {
         this.convertToDataType(this.tempData, this.dataType)
         console.log(this.tempData);
         console.log("TEMPDATA BREAKPOINT");
-
+        // debugger;
         console.log("CALCULATE GRAPH S/E")
         console.log(startDate)
         console.log(endDate);
@@ -1318,7 +1318,7 @@ class Graph {
                 for(let k = 1; k < rows.length; k++){
                     rows[k]['stockValue'] = rows[k]['stockValue']  / startValue
                     if(k < 10){
-                        console.log(rows[k]['stockValue']  / startValue)
+                        // console.log(rows[k]['stockValue']  / startValue)
                     }
                     
                    
@@ -1332,7 +1332,11 @@ class Graph {
         // for(this.tempTimeline.length; i++){
 
         // }
-
+        let savedNextValue = [];
+            for(let q = 0; q < data.length; q++){
+                // savedNextValue[q] = data[q][0]['stockValue']
+                savedNextValue[q] = 0;
+            }
 
 
             for(let i = 0; i < data.length; i++){
@@ -1343,20 +1347,33 @@ class Graph {
                 //     rows[0]['stockValue'] = 0;
                 // }
                 
-                let savedNextValue = 0;
-                savedNextValue = rows[0]['stockValue']
+                // let savedNextValue = 0;
+                savedNextValue[i] = rows[0]['stockValue']
                 let percent = 0;
                 for(let k = 1; k < rows.length; k++){
                     if(k < 30){
                         
-                        console.log(rows[k]['stockValue'] +" "+ rows[k-1]['stockValue'] + "K Num: " + k + "Next V"+ savedNextValue)
-                        console.log((rows[k]['stockValue'] * 1  / savedNextValue) );
-                        console.log()
-                    }
+                        if(i == 0){
+                            console.log("Current Number: " + rows[k]['stockValue'] );
+                            console.log("Previous Number: " + savedNextValue[i]);
+                        }
+                        
 
-                    percent = 1 + (-rows[k]['stockValue'] * 1  / savedNextValue)
-                    savedNextValue = rows[k]['stockValue']
+                        // console.log(rows[k]['stockValue'] +" First Value"+ rows[k-1]['stockValue'] + " Row num " + k + " Next V: "+ savedNextValue[i])
+                        // console.log((rows[k]['stockValue'] * 1  / savedNextValue[i]) );
+                        // console.log()
+                    }
+                    // console.log("Current Number: " + rows[k]['stockValue'] );
+                    // console.log("Previous Number: " + savedNextValue[i]);
+                    //percent = 1 + (-rows[k]['stockValue'] * 1  / savedNextValue[i])
+                    //percent = rows[k]['stockValue'] * 1  / savedNextValue[i]
+                    percent = (rows[k]['stockValue'] * 1  / savedNextValue[i]) + -1
+                    savedNextValue[i] = rows[k]['stockValue']
                     rows[k]['stockValue']  = percent;
+
+                    // percent = 1 + (-rows[k]['stockValue'] * 1  / savedNextValue)
+                    // savedNextValue = rows[k]['stockValue']
+                    // rows[k]['stockValue']  = percent;
                     
                     // rows[k]['stockValue'] = 1 + (-rows[k]['stockValue']  / rows[k-1]['stockValue'])
                     // if(k < 10){
@@ -1368,7 +1385,8 @@ class Graph {
 
                 if(rows.length >= 1){
                     var startValue = rows[0]['stockValue']
-                    savedNextValue = rows[0]['stockValue']
+                    savedNextValue[i] = rows[0]['stockValue']
+                    //savedNextValue = rows[0]['stockValue']
                     rows[0]['stockValue'] = 0;
                 }
                 // debugger;
@@ -1381,7 +1399,7 @@ class Graph {
     
     filterDays(){
 
-        let pointsToPlot = 50;
+        let pointsToPlot = 30;
         let daysPerPlot = 0;
 
         if(this.tempTimeline.length <= pointsToPlot){
@@ -1397,21 +1415,24 @@ class Graph {
         let timesPloted = []
         console.log("DAYS PER PLOT: " + daysPerPlot )
         for(let x = 0; x < this.tempData.length; x++){
+            console.log("ARRAY: "+ x)
+            console.log(this.tempData[x]);
             cursor[x] = this.tempData[x].length - 1
             maxLength[x] = this.tempData[x].length;
             startedLine[x] = false;
             numberOfSplices[x] = 0
-            
+            dayCounter[x] = 0;
+            timesPloted[x] = 0;
             
         }
 
 
-        console.log("WTF LOL");
-        console.log(this.tempTimeline);
-        console.log(this.tempTimeline[5056]);
+        // console.log("WTF LOL");
+        // console.log(this.tempTimeline);
+        // console.log(this.tempTimeline[5056]);
         for(let i = 0; i < this.tempData.length; i ++){
 
-            this.tempData
+            //this.tempData
         }
 
 
@@ -1434,27 +1455,44 @@ class Graph {
                 // console.log(this.tempTimeline[i]['stockDate'] == stockArray[cursor[x]]['stockDate'])
                 if((cursor[x] < maxLength[x] && cursor[x] >= 1) && (this.tempTimeline[i]['stockDate'] == stockArray[cursor[x]]['stockDate'])){
                     cursor[x] += -1;
-                    console.log("PASS")
-                    let value = stockArray[cursor[x]]['stockValue'];
+
+                    if(x == 0){
+                        // console.log("PASS")
+                        // console.log(this.tempTimeline[i]['stockDate'])
+                        // console.log(stockArray[i]['stockID'])
+                    // let value = stockArray[cursor[x]]['stockValue'];
                     //probably need to have cursor start at maxLength
-                    
-                    if(dayCounter[x] == daysPerPlot || startedLine[x] == false){
+                        // console.log("counter: "+dayCounter[x] + " Days per plot: "+ daysPerPlot);
+                    }
+                    // console.log("PASS")
+                    // let value = stockArray[cursor[x]]['stockValue'];
+                    //probably need to have cursor start at maxLength
+                    // console.log("counter: "+dayCounter[x] + " Days per plot: "+ daysPerPlot);
+                    if(dayCounter[x] >= daysPerPlot || startedLine[x] == false){
                         
                         if(startedLine[x] == true){
                             dayCounter[x] = 0;
                         } else {
                             
                             startedLine[x] = true;
+                            if(dayCounter[x] == 1){
+                                dayCounter[x] = 0;
+                            }
                             
                         }
+                        if(x == 0){
+                            // console.log("PLOTTED") 
+                        }
+
                         timesPloted[x] += 1;
-                        console.log("PLOTTED")
-                        console.log(timesPloted[x]);
+                        // console.log("PLOTTED")
+                        // console.log(timesPloted[x]);
 
                     } else {
-                        console.log(stockArray[x])
+                        // console.log(stockArray[x])
                         
-                        stockArray.splice(maxLength[x]-1-numberOfSplices[x],1)
+                        // stockArray.splice(maxLength[x]-1-numberOfSplices[x],1)
+                        stockArray.splice(maxLength[x]-1-numberOfSplices[x]-timesPloted[x],1)
                         numberOfSplices[x] += 1;
                         
                         //stockArray[cursor[x]]['stockValue'];
@@ -1473,6 +1511,12 @@ class Graph {
                 }
             }
         }
+        console.log("END OF FILTERDAYS")
+        console.log(this.tempData);
+        if(this.dataType == "percentageByPeriod") {
+            debugger;
+        }
+        
     }
 
     getMaxData(passedData, dataType){

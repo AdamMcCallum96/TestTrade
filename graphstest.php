@@ -16,8 +16,9 @@ $data = array();
 //var_dump($lol)
 StockDailyDAO::initialize();
 // $stockIDArray = array("TSLA");
-$stockIDArray = array("CGX.TRT","TSLA");
+// $stockIDArray = array("CGX.TRT","TSLA");
 // $stockIDArray = array("BCE.TRT","RCI-B.TRT","T.TRT","CGX.TRT","TSLA");
+$stockIDArray = array("BCE.TRT","RCI-B.TRT","T.TRT");
 // $stockIDArray = array("CGX.TRT","TSLA");
 
 for($i = 0; $i < count($stockIDArray); $i++){
