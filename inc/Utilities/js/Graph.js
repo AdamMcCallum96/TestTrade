@@ -1384,7 +1384,7 @@ class Graph {
         let pointsToPlot = 50;
         let daysPerPlot = 0;
 
-        if(this.tempTimeline <= pointsToPlot){
+        if(this.tempTimeline.length <= pointsToPlot){
             daysPerPlot = 1;
         } else {
             daysPerPlot = 1 + parseInt(this.tempTimeline.length / pointsToPlot)
@@ -1393,8 +1393,11 @@ class Graph {
         let maxLength = [];
         let startedLine = []; 
         let numberOfSplices = []
+        let dayCounter = []
+        let timesPloted = []
+        console.log("DAYS PER PLOT: " + daysPerPlot )
         for(let x = 0; x < this.tempData.length; x++){
-            cursor[x] = daysPerPlot * 2;
+            cursor[x] = this.tempData[x].length - 1
             maxLength[x] = this.tempData[x].length;
             startedLine[x] = false;
             numberOfSplices[x] = 0
@@ -1406,25 +1409,54 @@ class Graph {
         console.log("WTF LOL");
         console.log(this.tempTimeline);
         console.log(this.tempTimeline[5056]);
+        for(let i = 0; i < this.tempData.length; i ++){
+
+            this.tempData
+        }
+
+
+
         for(let i = this.tempTimeline.length - 1; i >= 0; i--){
            
             //Draw Data
+            
             for(let x = 0; x < this.tempData.length; x++){
                 let stockArray = this.tempData[x]
-            
-                cursor[x] += 1
-                console.log(i);
-                if(cursor[x] < maxLength[x] && this.tempTimeline[i]['stockDate'] == stockArray[cursor[x]]['stockDate']){
-                    
+                dayCounter[x] += 1;
+                // cursor[x] += -1;
+                // console.log(i);
+                // console.log(stockArray.length)
+                // console.log(cursor[x])
+                // console.log("LOL"this.tempTimeline[i]['stockDate'] )
+                // console.log(cursor[x] < maxLength[x] && cursor[x] >= 0)
+                // console.log(stockArray[cursor[x]]['stockDate'])
+                // console.log(this.tempTimeline[i]['stockDate'] )
+                // console.log(this.tempTimeline[i]['stockDate'] == stockArray[cursor[x]]['stockDate'])
+                if((cursor[x] < maxLength[x] && cursor[x] >= 1) && (this.tempTimeline[i]['stockDate'] == stockArray[cursor[x]]['stockDate'])){
+                    cursor[x] += -1;
+                    console.log("PASS")
                     let value = stockArray[cursor[x]]['stockValue'];
                     //probably need to have cursor start at maxLength
                     
-                    if(cursor[x] != 0 || startedLine[x] == false){
-                        stockArray[x].splice(maxLength[x]-1-numberOfSplices[x],1)
-                        numberOfSplices[x] += 1;
-                        startedLine[x] = true;
+                    if(dayCounter[x] == daysPerPlot || startedLine[x] == false){
+                        
+                        if(startedLine[x] == true){
+                            dayCounter[x] = 0;
+                        } else {
+                            
+                            startedLine[x] = true;
+                            
+                        }
+                        timesPloted[x] += 1;
+                        console.log("PLOTTED")
+                        console.log(timesPloted[x]);
+
                     } else {
-                        cursor = daysPerPlot;
+                        console.log(stockArray[x])
+                        
+                        stockArray.splice(maxLength[x]-1-numberOfSplices[x],1)
+                        numberOfSplices[x] += 1;
+                        
                         //stockArray[cursor[x]]['stockValue'];
                     }
               
@@ -1434,7 +1466,7 @@ class Graph {
                    
                    
                    
-                    cursor[x] = cursor[x] + 1;
+                    // cursor[x] = cursor[x] + 1;
                     // console.log(this.tempDataCursors);
                 } else {
 
