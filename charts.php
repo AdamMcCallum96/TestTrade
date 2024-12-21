@@ -19,7 +19,7 @@ $username = $_SESSION['user'];
 
 StockGraphsDAO::initialize();
 
-$result = StockGraphsDAO::selectStockGraphsFromUser($username);
+// $result = StockGraphsDAO::selectStockGraphsFromUser($username);
 
 //Quick Chart:
 
@@ -100,10 +100,15 @@ $colours = ["#FF0000",'#008800',"#0000FF"];
 //different graphs/datasets
 PageFunctionality::nav();
 PageFunctionality::tradeSearchBar();
+//PageFunctionality::addSearchQuery();
+PageFunctionality::tradeSearchResult();
 
 if(isset($_GET['search'])){
     //add the ticker to the query for the graph
+    PageFunctionality::addSearchQuery($_GET['search']);
 }
+
+PageFunctionality::tradeSearchResult();
 $gp = new GraphPage($data, $dates,$colours, "default","graphid1", $stockIDArray);
 // $gp.initGraphManager()
 // $gp.addGraph();

@@ -39,7 +39,7 @@ class PageFunctionality {
 
             </div>
             <div class="menuButton">
-                <a href="" class="menuText">Charts</a>
+                <a href="<?php $host = $_SERVER['HTTP_HOST']; echo "https://$host/mockstock/charts.php";?>" class="menuText">Charts</a>
                 <!-- <div class="menuTab"></div> -->
 
             </div>
@@ -466,6 +466,8 @@ class PageFunctionality {
         <div class="summaryGridRows">$3,500</div>
     </div> -->
     <?php }
+    
+
     static function tradeSearchBar() { ?>
 
 <div class="mainContent">
@@ -506,6 +508,67 @@ class PageFunctionality {
 
         <?php }
 
+        static function addSearchQuery($passedQuery) { 
+            // $_SESSION['searchQuery'] = "lol";
+            // $_SESSION['searchQuery'][] = $passedQuery;
+            if(gettype($_SESSION['searchQuery']) != "array"){
+                
+                settype($_SESSION['searchQuery'],"array");
+            }
+            if(count($_SESSION) <= 5){
+                array_push($_SESSION['searchQuery'], $passedQuery);
+            }
+            
+            var_dump($_SESSION);
+            
+            ?>
+
+        <div id="searchQueryContainer"> </div>
+        <script type="text/javascript">
+        let queryButtons = <?php echo json_encode($_SESSION['searchQuery']);?>
+        
+        let searchContainer = document.getElementById("searchQueryContainer")
+        for(let i = 0; i < queryButtons.length; i++){
+            
+            
+            let newDiv = document.createElement("div")
+            newDiv.classList.add("searchQueryButtonDiv")
+            // newDiv.textContent = queryButtons[i];
+            searchContainer.insertAdjacentElement("beforeend",newDiv)
+            
+            let newText = document.createElement("p")
+            newText.classList.add("searchQueryButtonText")
+            newText.textContent = queryButtons[i];
+            newDiv.insertAdjacentElement("beforeend",newText)
+            
+
+            //searchContainer.insertAdjacentElement("beforeend",newDiv)
+            let newButton = document.createElement("button")
+            newButton.classList.add("searchQueryButton")
+            newButton.style.backgroundImage = "url('images/delete.svg')"
+            newButton.addEventListener("click", function(){
+                let name = queryButtons[i];
+
+                for(let n = 0; n < queryButtons.length; n ++){
+                    if(name == queryButtons[n]){
+                        queryButtons.splice(n,1)
+                        this.parentNode.parentNode.removeChild(this.parentNode);
+                    }
+                }
+                
+            })
+            newDiv.insertAdjacentElement("beforeend",newButton)
+
+            
+
+
+        }
+        console.log(queryButtons);
+        // alert(queryButtons);
+        </script>
+            
+
+        <?php }
         static function tradeSearchResult() { ?>
             <div id='result_box'></div>
         <?php }

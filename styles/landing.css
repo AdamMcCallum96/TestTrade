@@ -32,6 +32,74 @@ body{
     /* background-color: darkorchid; */
 }
 
+#searchQueryContainer {
+
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+}
+
+.searchQueryButtonDiv {
+    display: flex;
+    /* display:inline-block; */
+    /* width: 100px; */
+    /* height: 40px; */
+    margin-right: 10px;
+    margin-left: 10px;
+    /* background-color: green; */
+    background-color: #0f4c64ff;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+    border-radius: 15px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: black;
+    /* height: 100px; */
+    /* height: 40px; */
+    /* width: 200px; */
+    /* height: fit-content; */
+    /* height: 200px; */
+    /* height: 15px; */
+}
+
+.searchQueryButton:hover {
+    /* box-shadow: inset 0 0 0 1000px rgba(75, 185, 189, 0.2); */
+    /* box-shadow: inset 0 0 0 1000px rgba(47, 245, 219, 0.698); */
+    background-color:rgb(71, 136, 179);
+}
+
+.searchQueryButton {
+    margin-left: 10px;
+    border-color: black;
+    border-style: solid;
+    border: none;
+    /* display:inline-block; */
+    /* width: 30px; */
+    /* height: 30px; */
+    /* margin-left: 0px; */
+    /* background-color: green; */
+    /* background-size:  */
+    border-radius:  10px;
+    background: no-repeat;
+    background-size: 100% 100%;
+    color: black;
+    height: 20px;
+    width: 20px;
+}
+
+.searchQueryButtonText {
+    
+    font-family: "Ubuntu Condensed";
+    text-align:center;
+    margin: auto;
+    /* text-justify: ; */
+    /* display:inline-block; */
+}
+
 .menuContainer, .searchRow, .searchTable, .currencyOptionsContainer {
 
     /* display: flex; */
