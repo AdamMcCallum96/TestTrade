@@ -18,5 +18,13 @@ static function createStockGraphs(StockGraphs $class){
 		self::$database->bind(':graphEndDate', $class->getGraphEndDate());
 		self::$database->execute();
 	}
+
+	static function selectStockGraphsFromUser($username){
+		$sql = "SELECT * FROM StockGraphs WHERE user_id = :user_id";
+		self::$database->query($sql);
+		self::$database->bind(':user_id', $username);
+		self::$database->execute();
+		return self::$database->resultSet();
+	}
 }
 ?>

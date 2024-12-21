@@ -39,4 +39,18 @@ static function deleteGraphTickers(){
 	return self::$database->resultSet();
 }
 
+static function updateGraphTickers(StockGraphsTickers $obj) {
+	$sql = "UPDATE StockGraphsTickers 
+	SET user_id = :user_id,  graph_id = :graph_id, stock_id = :stock_id
+	WHERE user_id = :user_id AND stock_id = :stock_id";
+
+	self::$database->query($sql);
+	self::$database->bind(':user_id', $obj->getUser_id());
+	self::$database->bind(':graph_id', $obj->getGraph_id());
+	self::$database->bind(':stock_id', $obj->getStock_id());
+	self::$database->execute();
+
+
+}
+}
 ?>

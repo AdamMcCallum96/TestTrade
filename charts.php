@@ -3,11 +3,50 @@
 require_once("inc/config.inc.php");
 require_once("inc/Utilities/PageFunctionality.class.php");
 require_once("inc/Utilities/PDOConnection.class.php");
+
+require_once("inc/Utilities/StockGraphsDAO.php");
+require_once("inc/Utilities/StockGraphsTickersDAO.php");
 require_once("inc/Utilities/StockAPIManager.class.php");
 require_once("inc/Utilities/GraphPage.class.php");
 require_once("inc/Utilities/StockDailyDAO.php");
 
 $data = array();
+
+session_start();
+$username = $_SESSION['user'];
+
+
+
+StockGraphsDAO::initialize();
+
+$result = StockGraphsDAO::selectStockGraphsFromUser($username);
+
+//Quick Chart:
+
+//Search bar and selection menu to find actual stocks
+
+//Click the stocks to quickly add them to a visual query
+//The visual quert simply shows a small list
+//of stocks in a flex box like structure
+//with a delete buttion next to them 
+//Click the construct graph to make the graph
+//with the desired stocks
+
+//Quick chart history to quickly
+
+    //search bar if you just want to see a stock charted
+if(empty($result)){
+    //Show the your list page contain graph names and add graph button
+} else {
+
+}
+
+
+
+
+
+
+
 
 //$result[] = StockAPIManager::getStockDaily("CGX.TRT");
 
@@ -60,6 +99,11 @@ $colours = ["#FF0000",'#008800',"#0000FF"];
 //flexibility with regard to what content can be displayed inbetween
 //different graphs/datasets
 PageFunctionality::nav();
+PageFunctionality::tradeSearchBar();
+
+if(isset($_GET['search'])){
+    //add the ticker to the query for the graph
+}
 $gp = new GraphPage($data, $dates,$colours, "default","graphid1", $stockIDArray);
 // $gp.initGraphManager()
 // $gp.addGraph();
@@ -71,39 +115,14 @@ $gp->initGraphManager($lol);
 $gp->addGraph($data, $dates, $colours, "default","lol", $stockIDArray);
 $gp->showGraph();
 
-// var_dump($gp->getData());
-// $gp->initJSProperties();
-// $gp->displayGraph();
-// $gl = new GraphPage($data, $dates, $colours, "slider","graphid2");
 $gp->addGraph($data, $dates, $colours, "slider","lol",$stockIDArray);
 $gp->showGraph();
 
-$gp->addGraph($data, $dates, $colours, "default","lol",$stockIDArray);
-$gp->showGraph();
 
-$gp->addGraph($data, $dates, $colours, "slider","lol", $stockIDArray);
-$gp->showGraph();
-//$gp->displayGraph();
-
-$gp->addGraph($data, $dates, $colours, "default","lol",$stockIDArray);
-$gp->showGraph();
-$gp->addGraph($data, $dates, $colours, "default","lol",$stockIDArray);
-$gp->showGraph();
 ?>
 <!-- </div> -->
 
 <?php
-// $gs = new GraphPage($data, $dates, $colours, "slider","graphid2");
-// $gs->displayGraph();
-
-// $gl = new GraphPage($data, $dates, $colours, "default","graphid2");
-// $gl->displayGraph();
-
-//var_dump($data);
-var_dump(json_encode($data));
-
-
-//Get th
 
 
 
