@@ -78,17 +78,17 @@ class GraphPage {
     <?php }
 
     function initGraphManager($id) { 
-        var_dump($id);
+        // var_dump($id);
         
         $test = $id;
-        var_dump($test);
-        var_dump("second dump");
+        // var_dump($test);
+        // var_dump("second dump");
         // $test = "brosef";
-        var_dump($test);
-        var_dump(json_encode($test));
+        // var_dump($test);
+        // var_dump(json_encode($test));
         $result = json_encode($test);
-        var_dump($result);
-        var_dump(json_decode($test));
+        // var_dump($result);
+        // var_dump(json_decode($test));
         ?>
          <script src="inc/Utilities/js/Graph.js"></script>
         <script src="inc/Utilities/js/GraphManager.js"></script>

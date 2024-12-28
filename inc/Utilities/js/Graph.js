@@ -1286,9 +1286,9 @@ class Graph {
         if(type == "slider"){
             this.initializeDisplay()
             this.displayData(canvas)
-            this.displayLegend(canvas)
+            // this.displayLegend(canvas)
             this.displayAxis(canvas)
-            this.displayXLabels(canvas)
+            // this.displayXLabels(canvas)
 
         }
         
@@ -1399,7 +1399,7 @@ class Graph {
     
     filterDays(){
 
-        let pointsToPlot = 30;
+        let pointsToPlot = 1000;
         let daysPerPlot = 0;
 
         if(this.tempTimeline.length <= pointsToPlot){

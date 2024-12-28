@@ -508,26 +508,109 @@ class PageFunctionality {
 
         <?php }
 
+        static function quickGraphDescription() { ?>
+            <div class="quickDivContainer">
+            <div class="quickDiv">
+            <p class="quickTitle">QUICK GRAPH</p>
+            <p class="quickSubTitle">Using quick graph:</p>
+            <ul class="quickList">
+                <li class="quickText">Search the stocks you want.</li>
+                <li class="quickText">Generate the graph.</li>
+                <li class="quickText">Use the graph to your liking.</li>
+                <li class="quickText">View your previous graphs.</li>
+            </ul>
+            <!-- <p class="quickText">Pick the stocks you want</p>
+            <p class="quickText">Generate the graph</p> -->
+            </div>
+        </div>
+        <div class="divider"></div>
+        <?php }
+
         static function addSearchQuery($passedQuery) { 
             // $_SESSION['searchQuery'] = "lol";
             // $_SESSION['searchQuery'][] = $passedQuery;
-            if(gettype($_SESSION['searchQuery']) != "array"){
+            // if(gettype($_SESSION['searchQuery']) != "array"){
                 
-                settype($_SESSION['searchQuery'],"array");
-            }
-            if(count($_SESSION) <= 5){
-                array_push($_SESSION['searchQuery'], $passedQuery);
-            }
+            //     settype($_SESSION['searchQuery'],"array");
+            // }
+            // if(count($_SESSION) <= 5){
+            //     array_push($_SESSION['searchQuery'], $passedQuery);
+            // }
             
-            var_dump($_SESSION);
+            // var_dump($_SESSION);
             
             ?>
 
         <div id="searchQueryContainer"> </div>
+        <!-- <div id="searchDescription">Generate the graph once you've picked all your stocks.</div> -->
+        <div id="searchConfirmationContainer"></div>
         <script type="text/javascript">
-        let queryButtons = <?php echo json_encode($_SESSION['searchQuery']);?>
+        let passedQuery = <?php echo json_encode($passedQuery);?>;
+        
+        
+
+        // alert(window.localStorage.searchQuery)
+        // alert(window.localStorage.searchQuery == undefined);
+        if(window.localStorage.searchQuery == undefined || window.localStorage.searchQuery == "undefined"){
+            window.localStorage.searchQuery = JSON.stringify(passedQuery)
+        } else if(JSON.parse(window.localStorage.searchQuery).length >= 5){
+            let searchContainer = document.getElementById("searchQueryContainer");
+            //insert above the search container
+            //letting know that the maximum number of stocks has been reached
+            alert("TO big to add another line")
+        } else  {
+            // alert(window.localStorage.searchQuery)
+            //var localStorageResult = [];
+            var localStorageResult = JSON.parse(window.localStorage.searchQuery)
+            var localStorageArray = [];
+            if(!Array.isArray(localStorageResult)){
+                
+                
+                localStorageArray[0] = localStorageResult
+            } else {
+                localStorageArray = localStorageResult
+            }
+        
+            localStorageArray.push(passedQuery);
+            window.localStorage.setItem("searchQuery", JSON.stringify(localStorageArray));
+        }
+
+        let queryButtons = JSON.parse(window.localStorage.searchQuery)
+
+        //generateIDS
+
+        // for(let i = 0; i < queryButtons.length; i++){
+        //     queryButtons[i] = queryButtons[i]+i
+        // }
+
+        // let queryButtons = <?php echo json_encode($_SESSION['searchQuery']);?>
+    
+        let searchConfirmation = document.getElementById("searchConfirmationContainer")
+
+        let generateGraphButton = document.createElement("button")
+        generateGraphButton.classList.add("searchConfirmationButton")
+        generateGraphButton.textContent = "Generate Graph";
+
+        generateGraphButton.addEventListener("click", function(){
+            let currentLink= location.protocol + '//' + location.host + location.pathname
+            //link without any attributes at all
+
+            let param1 = "?generateGraph=True"
+            let param2 = "&graphParams="+ JSON.stringify(queryButtons);
+
+            currentLink = currentLink + param1 + param2
+
+            alert(currentLink)
+            window.localStorage.searchQuery = undefined
+            window.location = currentLink
+
+            
+            
+        })
+        searchConfirmation.insertAdjacentElement("beforeend", generateGraphButton)
         
         let searchContainer = document.getElementById("searchQueryContainer")
+        let queryIDs = [];
         for(let i = 0; i < queryButtons.length; i++){
             
             
@@ -542,19 +625,38 @@ class PageFunctionality {
             newDiv.insertAdjacentElement("beforeend",newText)
             
 
+            //Making ids
+            // alert(queryButtons[i]);
+            // alert(i);
+            queryIDs[i] = queryButtons[i]+i.toString()
+            // alert(queryButtons[i])
             //searchContainer.insertAdjacentElement("beforeend",newDiv)
             let newButton = document.createElement("button")
             newButton.classList.add("searchQueryButton")
+            newButton.setAttribute("arrayID", queryIDs[i])
             newButton.style.backgroundImage = "url('images/delete.svg')"
             newButton.addEventListener("click", function(){
-                let name = queryButtons[i];
+                // let name = queryButtons[i];
+                // alert(this.getAttribute("arrayID"))
+                // console.log("NODES");
+                // console.log(this.parentNode);
+                // console.log(this.parentNode.parentNode);
+                // console.log(queryButtons);
+                // console.log(queryIDs);
+                for(let n = 0; n < queryButtons.length; n++){
 
-                for(let n = 0; n < queryButtons.length; n ++){
-                    if(name == queryButtons[n]){
+                    if(queryIDs[n] == this.getAttribute("arrayID")){
                         queryButtons.splice(n,1)
+                        queryIDs.splice(n,1)
+                        // console.log("NODES");
+                        // console.log(this.parentNode);
+                        // console.log(this.parentNode.parentNode);
                         this.parentNode.parentNode.removeChild(this.parentNode);
+                        window.localStorage.setItem("searchQuery", JSON.stringify(queryButtons))
                     }
                 }
+
+                
                 
             })
             newDiv.insertAdjacentElement("beforeend",newButton)

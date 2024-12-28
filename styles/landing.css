@@ -18,6 +18,8 @@ body{
     background-color: rgb(155, 155, 155);
     
 }
+
+
 #searchBar {
     
     padding: 0px;
@@ -32,14 +34,71 @@ body{
     /* background-color: darkorchid; */
 }
 
-#searchQueryContainer {
+.quickDivContainer {
+    width: 100%;
+    background-color: white;
+}
+.quickDiv {
+    /* display: inline; */
+    text-align: center;
+    margin: auto;
+    /* background-color: white; */
+    /* width: 100%; */
+    width: 25%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    /* margin-top: 50px;
+    margin-bottom: 60px; */
+}
 
+.quickTitle {
+    font-size: 40px;
+    font-weight: bold;
+    font-family: 'Ubuntu Condensed';
+    color: #006ca8ff;
+    
+}
+
+.quickSubTitle {
+    font-size: 20px;
+    /* font-weight: bold; */
+    font-family: 'Ubuntu Condensed';
+    color: #006ca8ff;
+    /* background-color:rgb(163, 163, 163); */
+}
+
+.quickList {
+    background-color:rgb(163, 163, 163);
+     width:fit-content;
+    text-align: left;
+    margin: auto;
+    padding: 35px;
+    border-radius: 5px;
+}
+
+.quickText {
+    font-size: 18px;
+    color:black;
+   
+}
+
+#searchDescription {
+    width: 100%;
+    text-align:center;
+    font-size: 18px;
+    font-family: "Ubuntu Condensed"
+}
+
+#searchQueryContainer {
+    margin: 10px;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: white;
 }
+
+
 
 .searchQueryButtonDiv {
     display: flex;
@@ -100,6 +159,31 @@ body{
     /* display:inline-block; */
 }
 
+.searchConfirmationButton {
+
+   
+    align-items: center;
+   
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    
+    /* align-items: center; */
+
+    padding: 10px;
+    background-color:  rgb(58, 58, 59);
+    color: white;
+    font-family: "Outfit";
+    font-size: 20px;
+}
+
+#searchConfirmationContainer {
+    width: 100%;
+    display: block;
+    margin: 10px;
+
+}
 .menuContainer, .searchRow, .searchTable, .currencyOptionsContainer {
 
     /* display: flex; */
@@ -511,6 +595,7 @@ table:hover {
     /* background-color: white; */
     
 }
+
 
 .currencyOption {
     padding: 10px;
