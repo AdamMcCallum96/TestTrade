@@ -526,6 +526,32 @@ class PageFunctionality {
         <div class="divider"></div>
         <?php }
 
+        static function quickGraphHistory($historyLines){ ?>
+
+        <div class="quickGraphHistoryContainer">
+
+        <p class="quickSubTitle">Recent Searches</p>
+        <div class="flexQuickGraphHistory">
+        <?php
+        $urlStart = "";
+            
+         foreach($historyLines as $line){
+            var_dump($line->getHistoryText());
+            //explode(" ", $line)
+            $urlStart = $_SERVER['PHP_SELF'];
+            $urlEnd = '?generateGraph=True&graphParams='.$line->getHistoryText();
+            $url = $urlStart . $urlEnd;
+            echo '<div class="flexQuickGraphHistoryItem">';
+            echo "<a href='".$url."'>";
+            echo $line->getHistoryText();
+            echo '</a></div>';
+         }
+         ?>
+        </div>
+        </div> 
+            
+        <?php }
+
         static function addSearchQuery($passedQuery) { 
             // $_SESSION['searchQuery'] = "lol";
             // $_SESSION['searchQuery'][] = $passedQuery;
@@ -548,12 +574,31 @@ class PageFunctionality {
         let passedQuery = <?php echo json_encode($passedQuery);?>;
         
         
-
+        // window.localStorage.searchQuery = "undefined";
         // alert(window.localStorage.searchQuery)
         // alert(window.localStorage.searchQuery == undefined);
+        console.log("STRINGIFY TESTS");
+        console.log(JSON.stringify("CGX.TRT"));
+        console.log(JSON.stringify(passedQuery));
+        // console.log(JSON.stringify(CGX.TRT));
         if(window.localStorage.searchQuery == undefined || window.localStorage.searchQuery == "undefined"){
-            window.localStorage.searchQuery = JSON.stringify(passedQuery)
-        } else if(JSON.parse(window.localStorage.searchQuery).length >= 5){
+            //ensures all outputs are arrays
+            let testQuery = [];
+            testQuery[0] = $passedQuery;
+            window.localStorage.searchQuery = JSON.stringify(testQuery);
+            // window.localStorage.searchQuery = JSON.stringify("lol")
+
+            // console.log("STRINGIFY");
+            // console.log(JSON.stringify("lol"));
+        } else if(JSON.parse(window.localStorage.searchQuery).length >= 5 && Array.isArray(JSON.parse(window.localStorage.searchQuery))){
+            console.log("is not undefined")
+
+            // let lStorage = JSON.parse(window.localStorage.searchQuery)
+            // let length =
+            // for(let i = 0; i <= lStorage.length; i ++){
+                
+            // }
+            
             let searchContainer = document.getElementById("searchQueryContainer");
             //insert above the search container
             //letting know that the maximum number of stocks has been reached
@@ -562,6 +607,8 @@ class PageFunctionality {
             // alert(window.localStorage.searchQuery)
             //var localStorageResult = [];
             var localStorageResult = JSON.parse(window.localStorage.searchQuery)
+            console.log(localStorageResult)
+            console.log("WTF")
             var localStorageArray = [];
             if(!Array.isArray(localStorageResult)){
                 
@@ -576,7 +623,7 @@ class PageFunctionality {
         }
 
         let queryButtons = JSON.parse(window.localStorage.searchQuery)
-
+        console.log(queryButtons);
         //generateIDS
 
         // for(let i = 0; i < queryButtons.length; i++){
@@ -594,15 +641,20 @@ class PageFunctionality {
         generateGraphButton.addEventListener("click", function(){
             let currentLink= location.protocol + '//' + location.host + location.pathname
             //link without any attributes at all
-
+            
+            console.log("QUERY BUTTONS")
+            console.log(queryButtons);
             let param1 = "?generateGraph=True"
             let param2 = "&graphParams="+ JSON.stringify(queryButtons);
+            let param3 = "&searchHistory=True"
 
-            currentLink = currentLink + param1 + param2
+            console.log(param2);
+            currentLink = currentLink + param1 + param2 + param3;
 
             alert(currentLink)
             window.localStorage.searchQuery = undefined
             window.location = currentLink
+            // debugger;
 
             
             
@@ -611,7 +663,20 @@ class PageFunctionality {
         
         let searchContainer = document.getElementById("searchQueryContainer")
         let queryIDs = [];
-        for(let i = 0; i < queryButtons.length; i++){
+
+        let queryButtonsLength = 0;
+        if(Array.isArray(queryButtons)){
+            queryButtonsLength = queryButtons.length
+        } else {
+            //new Fix
+            // queryButtons[0] = queryButtons;
+
+            //end of new fix
+            queryButtonsLength = 1;
+        }
+
+
+        for(let i = 0; i < queryButtonsLength; i++){
             
             
             let newDiv = document.createElement("div")
@@ -643,7 +708,17 @@ class PageFunctionality {
                 // console.log(this.parentNode.parentNode);
                 // console.log(queryButtons);
                 // console.log(queryIDs);
-                for(let n = 0; n < queryButtons.length; n++){
+                for(let n = 0; n < queryButtonsLength; n++){
+
+                    if(!Array.isArray(queryButtons)){
+                        queryButtons[0] = queryButtons;
+                    }
+
+                    console.log(queryButtons.length)
+                    // debugger;
+                    if(!queryButtons.length){
+                        queryButtons[0] = false;
+                    }
 
                     if(queryIDs[n] == this.getAttribute("arrayID")){
                         queryButtons.splice(n,1)

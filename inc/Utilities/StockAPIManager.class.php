@@ -11,7 +11,9 @@ require_once('inc/Utilities/StockDAO.php');
 class StockAPIManager {
     
     
-    static function getStockDaily($stockID){
+    static function getStockDaily($stockID, $test){
+
+        $startTime = microtime(true);
         StockDailyDAO::initialize();
         StockDAO::initialize();
         $stockExists = StockAPIManager::getStock($stockID);
@@ -59,7 +61,10 @@ class StockAPIManager {
 
         //$fileLog = fopen("../Logs/errorlog.txt","w");
         $fileLog = fopen("inc/Logs/errorlog.txt","w");
-        
+        $endTime = microtime(true);
+        var_dump("IN FUNCTION TIME1");
+        var_dump($endTime - $startTime);
+        $startTime = microtime(true);
         
         /**localtime greater than stock close time**/
         if((/**$stockExists == True && $localTimeStamp > $localCloseTime) || (**/!$stockFetch)){
@@ -69,7 +74,8 @@ class StockAPIManager {
             //Empty stocks so must inserts
             // var_dump("STOCCKKKKK: ". $stock1);
             if(!$stock1){
-                fwrite($fileLog, "Empty Stock");
+                var_dump("DATE STOCK NOT RETURN");
+                // fwrite($fileLog, "Empty Stock");
 
                 $result = file_get_contents("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=".$stockID."&outputsize=full&apikey=".APIKEY);
                 $phpObject = json_decode($result);
@@ -97,18 +103,29 @@ class StockAPIManager {
                 }
                 $date = $xData;
                 $value = $yData;
-                for($x=0; $x < count($date); $x++){
-                    $stockDaily = new StockDaily;
-                    $stockDaily->setStockID($stockID);
-                    $stockDaily->setStockDate($date[$x]);
-                    $stockDaily->setStockValue($value[$x]);
-                    try{
-                    $execute = StockDailyDAO::createStockDaily($stockDaily);
-                    } catch(Exception $e){
-                        // echo 'Exception Message: ', $e->getMessage();
+                //$test = true;
+                $endTime = microtime(true);
+                var_dump("IN FUNCTION TIME2");
+                var_dump($endTime - $startTime);
+                
+                if($test == true){
+                    StockDailyDAO::createAllStockDaily($date, $value, $stockID);
+                } else {
+                    for($x=0; $x < count($date); $x++){
+                        $stockDaily = new StockDaily;
+                        $stockDaily->setStockID($stockID);
+                        $stockDaily->setStockDate($date[$x]);
+                        $stockDaily->setStockValue($value[$x]);
+                        try{
+                        $execute = StockDailyDAO::createStockDaily($stockDaily);
+                        } catch(Exception $e){
+                            // echo 'Exception Message: ', $e->getMessage();
+                        }
+                       
                     }
-                   
                 }
+
+                
                 $result = [$date,$value];
             }
             else {
@@ -144,6 +161,9 @@ class StockAPIManager {
         //properties [][0]= open, high, low, close, volume, date
         // file_put_contents("inc/Logs/error.txt", "test3");
         // file_put_contents("inc/Logs/error.txt", serialize($result));
+        if($test == true){
+            return StockDailyDAO::getStockDaily($stockID);
+        }
         return $result;
     }
 
@@ -154,17 +174,17 @@ class StockAPIManager {
             StockDAO::initialize();
             $stockExists = StockDAO::getStock($id);
             if(!$stockExists){
-                var_dump($id);
+                // var_dump($id);
                 $result = file_get_contents('https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords='.$id.'&apikey='.APIKEY);
                 $result = json_decode($result);
-                var_dump($result);
-                var_dump($result->bestMatches[0]->{'1. symbol'});
-                var_dump("YOUR MOM");
+                // var_dump($result);
+                // var_dump($result->bestMatches[0]->{'1. symbol'});
+                // var_dump("YOUR MOM");
                 if($id == $result->bestMatches[0]->{'1. symbol'}){
                     //we have success
                     $data = (array)$result->bestMatches[0];
                     $data = array_values($data);
-                    var_dump($data);
+                    
                     $stock = new Stock(); 
                     $stock->setID($data[0]);
                     $stock->setStockName($data[1]);
@@ -173,7 +193,7 @@ class StockAPIManager {
                     $stock->setStockMarketClose($data[5]);
                     $stock->setStockTimezone($data[6]);
                     $stock->setStockCurrency($data[7]);
-                    var_dump("LOL");
+                    
                     StockDAO::createStock($stock);
                     $doesExist = StockDAO::getStock($id);
                     
@@ -188,11 +208,11 @@ class StockAPIManager {
                         
                     }
                 }
-                var_dump("It was dumb");
+               
                
              
                 //var_dump($result->bestMatches[0]->);
-                var_dump(gettype($result));
+                // var_dump(gettype($result));
             } else {
                 // var_dump($result);
                 // var_dump(gettype($result));

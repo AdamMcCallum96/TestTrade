@@ -9,6 +9,8 @@ require_once("inc/Utilities/StockGraphsTickersDAO.php");
 require_once("inc/Utilities/StockAPIManager.class.php");
 require_once("inc/Utilities/GraphPage.class.php");
 require_once("inc/Utilities/StockDailyDAO.php");
+require_once("inc/Utilities/QuickGraphHistoryDAO.php");
+require_once("inc/Entities/QuickGraphHistory.class.php");
 
 $data = array();
 
@@ -16,7 +18,7 @@ session_start();
 $username = $_SESSION['user'];
 
 
-
+QuickGraphHistoryDAO::initialize();
 StockGraphsDAO::initialize();
 
 // $result = StockGraphsDAO::selectStockGraphsFromUser($username);
@@ -60,56 +62,11 @@ if(empty($result)){
 
 //var_dump($lol)
 StockDailyDAO::initialize();
-// $stockIDArray = array("TSLA");
-//$stockIDArray = array("CGX.TRT","TSLA");
-// $stockIDArray = array("BCE.TRT","RCI-B.TRT","T.TRT","CGX.TRT","TSLA");
-// $stockIDArray = array("BCE.TRT","RCI-B.TRT","T.TRT");
-// $stockIDArray = array("CGX.TRT","TSLA");
 
-// for($i = 0; $i < count($stockIDArray); $i++){
-
-//     $data[] = StockDailyDAO::getStockDaily($stockIDArray[$i]);
-// }
-//xdebug_info();
-
-// $data[] = StockDailyDAO::getStockDaily($stockIDArray[1]);
-
-//var_dump($result);
-// $dates = StockDailyDAO::getDatesDistinctFromStocks($stockIDArray);
-// var_dump($dateTest);
-
-
-//var_dump($data);
-// for($x = 0; $x < count($data); $x ++){
-//     $stockArray = $data[$x];
-//     for($i = 0; $i < count($stockArray); $i++){
-//         $data[$x][$i] = $stockArray[$i]->jsonSerialize();
-//     }
-// }
-
-// for($n = 0; $n < count($stockIDArray); $n){
-//     $stockIDArray[$n] = $stockIDArray[$n]->jsonSerialize();
-// }
-// $stockIDArray = $stockIDArray->jsonSerialize();
-//$colours = ["#FF0000",'#008800',"#0000FF"];
-//$colours = ["#FF0000",'#00800',"#0000FF"];
-
-//Graph page in theory holds all the graphs for the entire page.
-//You use the graph page constructor to simply
-//Give your page graph functionalities.
-//Use the displayGraph method or displayAllGraphs
-//to show a graph or all graphs in the order in which
-//they were added to the page.
-//This has the power to give you a lot of flexibililty.
-//If you're only showing one graph it gives you extra
-//flexibility with regard to what content can be displayed inbetween
-//different graphs/datasets
 PageFunctionality::nav();
 PageFunctionality::quickGraphDescription();
 PageFunctionality::tradeSearchBar();
-//PageFunctionality::addSearchQuery();
-//PageFunctionality::tradeSearchResult();
-// var_dump($_GET['graphParams']);
+
 
 
 
@@ -127,40 +84,69 @@ if(isset($_GET['graphParams'])){
     $res = json_decode($_GET['graphParams']);
     $stockIDArray = $res;
 
-    for($i = 0; $i < count($stockIDArray); $i++){
+    if(isset($_GET['searchHistory'])){
+        //insert param into the database
+        $QGH = new QuickGraphHistory();
+        $QGH->setUser_id($_SESSION['user']);
+        $QGH->setHistoryText($_GET['graphParams']);
 
-        $data[] = StockDailyDAO::getStockDaily($stockIDArray[$i]);
+        QuickGraphHistoryDAO::createQuickGraphHistory($QGH);
+        //go to database, if more than 5 records for the use
+        //Delete the number of records by date
+
     }
-    //xdebug_info();
-    
-    // $data[] = StockDailyDAO::getStockDaily($stockIDArray[1]);
-    
-    //var_dump($result);
-    $dates = StockDailyDAO::getDatesDistinctFromStocks($stockIDArray);
-    
-    
-    for($x = 0; $x < count($data); $x ++){
-        $stockArray = $data[$x];
-        for($i = 0; $i < count($stockArray); $i++){
-            $data[$x][$i] = $stockArray[$i]->jsonSerialize();
+
+    var_dump($stockIDArray);
+    if(!$stockIDArray[0] == false){
+        for($i = 0; $i < count($stockIDArray); $i++){
+            $data[] = StockAPIManager::getStockDaily($stockIDArray[$i], true);
+            // var_dump($data);
+            // $data = array();
+            // $data[] = StockDailyDAO::getStockDaily($stockIDArray[$i]);
+            // var_dump($data);
         }
-    }
-    $colours = ["#FF0000",'#008800',"#00c1ff","#ffd500","#dc00ff 
-    "];
+        //xdebug_info();
+        
+        // $data[] = StockDailyDAO::getStockDaily($stockIDArray[1]);
+        
+        //var_dump($result);
+        $dates = StockDailyDAO::getDatesDistinctFromStocks($stockIDArray);
+        
+        
+        for($x = 0; $x < count($data); $x ++){
+            $stockArray = $data[$x];
+            for($i = 0; $i < count($stockArray); $i++){
+                $data[$x][$i] = $stockArray[$i]->jsonSerialize();
+            }
+        }
+        $colours = ["#FF0000",'#008800',"#00c1ff","#ffd500","#dc00ff 
+        "];
+    
+        $gp = new GraphPage($data, $dates,$colours, "default","graphid1", $stockIDArray);
+        // $gp.initGraphManager()
+        // $gp.addGraph();
+        $lol = "nice";
+        ?>
+        <!-- <div style="width: 50%"> -->
+        <?php
+        $gp->initGraphManager($lol);
+        $gp->addGraph($data, $dates, $colours, "default","lol", $stockIDArray);
+        $gp->showGraph();
+    
+        $gp->addGraph($data, $dates, $colours, "slider","lol",$stockIDArray);
+        $gp->showGraph();
 
-    $gp = new GraphPage($data, $dates,$colours, "default","graphid1", $stockIDArray);
-    // $gp.initGraphManager()
-    // $gp.addGraph();
-    $lol = "nice";
-    ?>
-    <!-- <div style="width: 50%"> -->
-    <?php
-    $gp->initGraphManager($lol);
-    $gp->addGraph($data, $dates, $colours, "default","lol", $stockIDArray);
-    $gp->showGraph();
+        
 
-    $gp->addGraph($data, $dates, $colours, "slider","lol",$stockIDArray);
-    $gp->showGraph();
+    } 
+    
+    $user = $_SESSION['user'];
+       
+        $result = QuickGraphHistoryDAO::getRecent($user);
+        
+        var_dump($result);
+        PageFunctionality::quickGraphHistory($result);
+
     
 }
 

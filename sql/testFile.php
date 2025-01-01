@@ -93,6 +93,49 @@ static function createUserAccountBalance(UserAccountBalance $class){
 }
 ?>
 <?php
+Class UserAccountTransactionDAO {
+	private static $database;
+
+    static function initialize() {
+        self::$database = new PDOConnection('UserAccountTransaction');
+    }	
+static function createUserAccountTransaction(UserAccountTransaction $class){
+		$sql = 'INSERT INTO UserAccountTransaction (user_id, currencyCode, transactionType, amount)
+	VALUES (:user_id, :currencyCode, :transactionType, :amount)';
+		self::$database->query($sql);
+		self::$database->bind(':user_id', $class->getUser_id());
+		self::$database->bind(':currencyCode', $class->getCurrencyCode());
+		self::$database->bind(':transactionType', $class->getTransactionType());
+		self::$database->bind(':amount', $class->getAmount());
+		self::$database->execute();
+	}
+}
+?>
+<?php
+Class CurrencyConversionDAO {
+	private static $database;
+
+    static function initialize() {
+        self::$database = new PDOConnection('CurrencyConversion');
+    }	
+static function createCurrencyConversion(CurrencyConversion $class){
+		$sql = 'INSERT INTO CurrencyConversion (conversionID, user_id, initialType, resultingType, initialValue, resultingValue, fee, conversionTime, );)
+	VALUES (:conversionID, :user_id, :initialType, :resultingType, :initialValue, :resultingValue, :fee, :conversionTime, :);)';
+		self::$database->query($sql);
+		self::$database->bind(':conversionID', $class->getConversionID());
+		self::$database->bind(':user_id', $class->getUser_id());
+		self::$database->bind(':initialType', $class->getInitialType());
+		self::$database->bind(':resultingType', $class->getResultingType());
+		self::$database->bind(':initialValue', $class->getInitialValue());
+		self::$database->bind(':resultingValue', $class->getResultingValue());
+		self::$database->bind(':fee', $class->getFee());
+		self::$database->bind(':conversionTime', $class->getConversionTime());
+		self::$database->bind(':);', $class->get);());
+		self::$database->execute();
+	}
+}
+?>
+<?php
 Class UserStockBoughtDAO {
 	private static $database;
 
@@ -100,16 +143,17 @@ Class UserStockBoughtDAO {
         self::$database = new PDOConnection('UserStockBought');
     }	
 static function createUserStockBought(UserStockBought $class){
-		$sql = 'INSERT INTO UserStockBought (stockBoughtID, stockID, userID, price, quantity, timePurchased, finalized)
-	VALUES (:stockBoughtID, :stockID, :userID, :price, :quantity, :timePurchased, :finalized)';
+		$sql = 'INSERT INTO UserStockBought (stockBoughtID, stockID, userID, price, quantity, timeBought, finalized, boughtTime)
+	VALUES (:stockBoughtID, :stockID, :userID, :price, :quantity, :timeBought, :finalized, :boughtTime)';
 		self::$database->query($sql);
 		self::$database->bind(':stockBoughtID', $class->getStockBoughtID());
 		self::$database->bind(':stockID', $class->getStockID());
 		self::$database->bind(':userID', $class->getUserID());
 		self::$database->bind(':price', $class->getPrice());
 		self::$database->bind(':quantity', $class->getQuantity());
-		self::$database->bind(':timePurchased', $class->getTimePurchased());
+		self::$database->bind(':timeBought', $class->getTimeBought());
 		self::$database->bind(':finalized', $class->getFinalized());
+		self::$database->bind(':boughtTime', $class->getBoughtTime());
 		self::$database->execute();
 	}
 }
@@ -122,8 +166,8 @@ Class UserStockSoldDAO {
         self::$database = new PDOConnection('UserStockSold');
     }	
 static function createUserStockSold(UserStockSold $class){
-		$sql = 'INSERT INTO UserStockSold (stockSoldID, stockID, userID, price, quantity, timeSold, finalized)
-	VALUES (:stockSoldID, :stockID, :userID, :price, :quantity, :timeSold, :finalized)';
+		$sql = 'INSERT INTO UserStockSold (stockSoldID, stockID, userID, price, quantity, timeSold, finalized, soldTime)
+	VALUES (:stockSoldID, :stockID, :userID, :price, :quantity, :timeSold, :finalized, :soldTime)';
 		self::$database->query($sql);
 		self::$database->bind(':stockSoldID', $class->getStockSoldID());
 		self::$database->bind(':stockID', $class->getStockID());
@@ -132,6 +176,7 @@ static function createUserStockSold(UserStockSold $class){
 		self::$database->bind(':quantity', $class->getQuantity());
 		self::$database->bind(':timeSold', $class->getTimeSold());
 		self::$database->bind(':finalized', $class->getFinalized());
+		self::$database->bind(':soldTime', $class->getSoldTime());
 		self::$database->execute();
 	}
 }
@@ -144,8 +189,8 @@ Class UserStockTotalsDAO {
         self::$database = new PDOConnection('UserStockTotals');
     }	
 static function createUserStockTotals(UserStockTotals $class){
-		$sql = 'INSERT INTO UserStockTotals (stockID, userID, boughtPriceAvg, soldPriceAvg, boughtPriceTotal, soldPriceTotal)
-	VALUES (:stockID, :userID, :boughtPriceAvg, :soldPriceAvg, :boughtPriceTotal, :soldPriceTotal)';
+		$sql = 'INSERT INTO UserStockTotals (stockID, userID, boughtPriceAvg, soldPriceAvg, boughtPriceTotal, soldPriceTotal, boughtQuantity, soldQuantity)
+	VALUES (:stockID, :userID, :boughtPriceAvg, :soldPriceAvg, :boughtPriceTotal, :soldPriceTotal, :boughtQuantity, :soldQuantity)';
 		self::$database->query($sql);
 		self::$database->bind(':stockID', $class->getStockID());
 		self::$database->bind(':userID', $class->getUserID());
@@ -153,6 +198,29 @@ static function createUserStockTotals(UserStockTotals $class){
 		self::$database->bind(':soldPriceAvg', $class->getSoldPriceAvg());
 		self::$database->bind(':boughtPriceTotal', $class->getBoughtPriceTotal());
 		self::$database->bind(':soldPriceTotal', $class->getSoldPriceTotal());
+		self::$database->bind(':boughtQuantity', $class->getBoughtQuantity());
+		self::$database->bind(':soldQuantity', $class->getSoldQuantity());
+		self::$database->execute();
+	}
+}
+?>
+<?php
+Class StockOrderDAO {
+	private static $database;
+
+    static function initialize() {
+        self::$database = new PDOConnection('StockOrder');
+    }	
+static function createStockOrder(StockOrder $class){
+		$sql = 'INSERT INTO StockOrder (stockID, userID, orderType, quantity, soldTime, ))
+	VALUES (:stockID, :userID, :orderType, :quantity, :soldTime, :))';
+		self::$database->query($sql);
+		self::$database->bind(':stockID', $class->getStockID());
+		self::$database->bind(':userID', $class->getUserID());
+		self::$database->bind(':orderType', $class->getOrderType());
+		self::$database->bind(':quantity', $class->getQuantity());
+		self::$database->bind(':soldTime', $class->getSoldTime());
+		self::$database->bind(':)', $class->get)());
 		self::$database->execute();
 	}
 }
@@ -271,6 +339,24 @@ static function createStockGraphsTickers(StockGraphsTickers $class){
 		self::$database->bind(':user_id', $class->getUser_id());
 		self::$database->bind(':graph_id', $class->getGraph_id());
 		self::$database->bind(':stock_id', $class->getStock_id());
+		self::$database->execute();
+	}
+}
+?>
+<?php
+Class QuickGraphHistoryDAO {
+	private static $database;
+
+    static function initialize() {
+        self::$database = new PDOConnection('QuickGraphHistory');
+    }	
+static function createQuickGraphHistory(QuickGraphHistory $class){
+		$sql = 'INSERT INTO QuickGraphHistory (history_id, user_id, historyText)
+	VALUES (:history_id, :user_id, :historyText)';
+		self::$database->query($sql);
+		self::$database->bind(':history_id', $class->getHistory_id());
+		self::$database->bind(':user_id', $class->getUser_id());
+		self::$database->bind(':historyText', $class->getHistoryText());
 		self::$database->execute();
 	}
 }

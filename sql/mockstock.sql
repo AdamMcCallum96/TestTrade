@@ -202,6 +202,16 @@ CREATE TABLE StockGraphsTickers (
     FOREIGN KEY (stock_id) REFERENCES Stock(ID)
 );
 
+CREATE TABLE QuickGraphHistory (
+    history_id INT NOT NULL AUTO_INCREMENT,
+    user_id varchar(40) NOT NULL,
+    historyText varchar(128) NOT NULL,
+
+    PRIMARY KEY (history_id, user_id),
+    FOREIGN KEY (user_id) REFERENCES User(email)
+    
+);
+
 
 
 INSERT INTO Currency (currencyCode, currencyName) VALUES ('AED', 'United Arab Emirates Dirham');

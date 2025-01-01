@@ -18,6 +18,44 @@ class StockDailyDAO {
         self::$database->execute();
     }
 
+    static function createAllStockDaily($xData, $yData, $stockID){
+        $sql = "INSERT INTO StockDaily (stockID, stockDate, stockValue)
+        VALUES";
+
+        $startTime = microtime(true);
+        for($i = 0; $i < count($xData); $i ++){
+            if($i != count($xData) - 1){
+                $sql = $sql . " (?, ?, ?),";
+                
+            } else {
+                $sql = $sql . " (?, ?, ?)";
+            }      
+        }
+        $endTime = microtime(true);
+        var_dump("stringTime");
+        var_dump($endTime - $startTime);
+        var_dump($sql);
+        $startTime = microtime(true);
+        self::$database->query($sql);
+        $num = 0;
+        for($i = 0; $i < count($xData); $i ++){
+                self::$database->bind($num + 1, $stockID);
+                self::$database->bind($num + 2, $xData[$i]);
+                self::$database->bind($num + 3, $yData[$i]);
+                $num += 3;
+        }
+        $endTime = microtime(true);
+        var_dump("bindTime");
+        var_dump($endTime - $startTime);
+
+        $startTime = microtime(true);
+        self::$database->execute();
+        $endTime = microtime(true);
+        var_dump("executeTime");
+        var_dump($endTime - $startTime);
+       
+    }
+
     static function getStockDaily($id) {
         $sql = 'SELECT * FROM StockDaily WHERE stockID = :id ORDER BY stockDate ASC';
         self::$database->query($sql);
