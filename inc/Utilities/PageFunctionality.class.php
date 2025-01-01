@@ -584,7 +584,7 @@ class PageFunctionality {
         if(window.localStorage.searchQuery == undefined || window.localStorage.searchQuery == "undefined"){
             //ensures all outputs are arrays
             let testQuery = [];
-            testQuery[0] = $passedQuery;
+            testQuery[0] = passedQuery;
             window.localStorage.searchQuery = JSON.stringify(testQuery);
             // window.localStorage.searchQuery = JSON.stringify("lol")
 
