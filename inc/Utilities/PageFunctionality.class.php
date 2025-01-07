@@ -508,6 +508,27 @@ class PageFunctionality {
 
         <?php }
 
+        static function saveGraphButton() { ?>
+            
+            <div id="searchConfirmationContainer"></div>
+
+            <script type="text/javascript">
+                let searchConfirmation = document.getElementById("searchConfirmationContainer")
+
+                let generateGraphButton = document.createElement("button")
+                generateGraphButton.classList.add("searchConfirmationButton")
+                generateGraphButton.textContent = "Save Graph";
+
+                generateGraphButton.addEventListener("click", function(){
+
+
+
+                });
+                searchConfirmation.insertAdjacentElement("beforeend", generateGraphButton)
+
+            </script>
+        <?php }
+
         static function quickGraphDescription() { ?>
             <div class="quickDivContainer">
             <div class="quickDiv">
@@ -527,26 +548,46 @@ class PageFunctionality {
         <?php }
 
         static function quickGraphHistory($historyLines){ ?>
-
+        <div class="divider"></div>
         <div class="quickGraphHistoryContainer">
 
-        <p class="quickSubTitle">Recent Searches</p>
+        
         <div class="flexQuickGraphHistory">
+        <p class="quickSubTitle flexRecentSearch">Recent Searches</p>
         <?php
         $urlStart = "";
-            
+        
          foreach($historyLines as $line){
-            var_dump($line->getHistoryText());
+            // var_dump($line->getHistoryText());
+
+            $formattedLine = $line->getHistoryText();
+            $formattedLine = trim($formattedLine, "[]");
+            $formattedLine = str_replace('"', "", $formattedLine);
+            $formattedLine = str_replace(",", "   ", $formattedLine);
             //explode(" ", $line)
             $urlStart = $_SERVER['PHP_SELF'];
             $urlEnd = '?generateGraph=True&graphParams='.$line->getHistoryText();
             $url = $urlStart . $urlEnd;
             echo '<div class="flexQuickGraphHistoryItem">';
-            echo "<a href='".$url."'>";
-            echo $line->getHistoryText();
+            echo "<a class=".'"quickGraphHistoryLink"'." href='".$url."'>";
+            echo $formattedLine;
             echo '</a></div>';
          }
          ?>
+
+
+        </div>
+        <div class="flexQuickGraphHistory">
+        <p class="quickSubTitle flexRecentSearch">Saved Graphs</p>
+        <div class="flexQuickGraphHistoryItem">
+            <a class="quickGraphHistoryLink" href='".$url."'>TECH STOCKS</a>
+        </div>
+        <div class="flexQuickGraphHistoryItem">
+            <a class="quickGraphHistoryLink" href='".$url."'>TELECOM</a>
+        </div>
+        <div class="flexQuickGraphHistoryItem">
+            <a class="quickGraphHistoryLink" href='".$url."'>OIL AND GAS</a>
+        </div>
         </div>
         </div> 
             
@@ -630,7 +671,7 @@ class PageFunctionality {
         //     queryButtons[i] = queryButtons[i]+i
         // }
 
-        // let queryButtons = <?php echo json_encode($_SESSION['searchQuery']);?>
+        // let queryButtons = <?php //echo json_encode($_SESSION['searchQuery']);?>
     
         let searchConfirmation = document.getElementById("searchConfirmationContainer")
 

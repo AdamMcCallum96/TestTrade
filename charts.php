@@ -81,6 +81,7 @@ PageFunctionality::tradeSearchResult();
 
 if(isset($_GET['graphParams'])){
     
+    PageFunctionality::saveGraphButton();
     $res = json_decode($_GET['graphParams']);
     $stockIDArray = $res;
 
@@ -140,15 +141,17 @@ if(isset($_GET['graphParams'])){
 
     } 
     
-    $user = $_SESSION['user'];
-       
-        $result = QuickGraphHistoryDAO::getRecent($user);
-        
-        var_dump($result);
-        PageFunctionality::quickGraphHistory($result);
+    
 
     
 }
+
+$user = $_SESSION['user'];
+       
+        $result = QuickGraphHistoryDAO::getRecent($user);
+        
+        // var_dump($result);
+        PageFunctionality::quickGraphHistory($result);
 
 
 
