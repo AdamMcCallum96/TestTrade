@@ -76,12 +76,14 @@ if(isset($_GET['search'])){
 }
 PageFunctionality::tradeSearchResult();
 
-
+if(isset($_POST['stocks'])){
+    var_dump($_POST);
+}
 
 
 if(isset($_GET['graphParams'])){
     
-    PageFunctionality::saveGraphButton();
+    PageFunctionality::saveGraphButton($_GET['graphParams']);
     $res = json_decode($_GET['graphParams']);
     $stockIDArray = $res;
 

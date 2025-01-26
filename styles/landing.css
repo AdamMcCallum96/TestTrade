@@ -34,6 +34,8 @@ body{
     /* background-color: darkorchid; */
 }
 
+
+
 #saveGraphPopUp {
     position: fixed;
 
@@ -236,15 +238,17 @@ body{
     /* display:inline-block; */
 }
 
+
+
 .searchConfirmationButton {
 
    
-    align-items: center;
+    /* align-items: center;
    
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: auto;
+    align-items: center; 
+    justify-content: center; */
+    /* margin: auto; */
     
     /* align-items: center; */
 
@@ -253,6 +257,43 @@ body{
     color: white;
     font-family: "Outfit";
     font-size: 20px;
+}
+
+
+
+#popUpForm, .popUpText{
+    /* border: unset; */
+    outline: unset;
+    margin: unset;
+    /* padding: unset; */
+    /* padding: 5px; */
+    /* border-width: 0px; */
+}
+
+.popUpText{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#popUpForm {
+    
+
+    width: 80%;
+    margin: auto;
+    text-align: center;
+}
+.popUpButtonDiv {
+    /* display:inline-block;
+    text-align: center; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popUpButton {
+    /* display;
+    margin-right: 0px;
+    margin-left: 0px; */
+    margin: 10px;
 }
 
 #searchConfirmationContainer {

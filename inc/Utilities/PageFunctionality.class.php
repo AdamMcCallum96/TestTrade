@@ -508,17 +508,21 @@ class PageFunctionality {
 
         <?php }
 
-        static function saveGraphButton() { ?>
+        static function saveGraphButton($stocks) { ?>
             
             <div id="searchConfirmationContainer">
                 
             </div>
             <div id="saveGraphPopUp">
-                <form>
-                <t>Graph Name</t>
-                <input type="text" placeholder="Graph Name">
-                <t>Keep</t>
-                <input type="checkbox">
+                <form id="popUpForm"  method = "post">
+                <t class="popUpText">Graph Name</t>
+                <br>
+                <input class="popUptext" type="text" name="graphName">
+                <input type="hidden" value='<?php echo $stocks;?>' name="stocks">
+                <input id="saveGraphStartDate" type="hidden" value="" name="startDate">
+                <input id="saveGraphEndDate" type="hidden" value="" name="endDate">
+                <!-- <t>Keep</t> -->
+                <!-- <input type="checkbox"> -->
                 </form>
             </div>
 
@@ -538,6 +542,7 @@ class PageFunctionality {
                     //document.getElementById("saveGraphPopUp");
                     let body = document.getElementById("body")
                     let pop = document.getElementById("saveGraphPopUp")
+                    // = document.getElementById("popUpForm")
                     body.insertAdjacentElement('afterend',pop)
                     pop.style.visibility = "visible"
 
@@ -547,16 +552,36 @@ class PageFunctionality {
                 searchConfirmation.insertAdjacentElement("beforeend", generateGraphButton)
                 // searchConfirmation.insertAdjacentElement("beforeend", popup)
 
-                let popUpContainer = document.getElementById("saveGraphPopUp");
-                generateGraphButton = document.createElement("button")
-                generateGraphButton.classList.add("searchConfirmationButton")
-                generateGraphButton.textContent = "Back";
-                popUpContainer.insertAdjacentElement("beforeend", generateGraphButton)
+                let popUpContainer = document.getElementById("popUpForm");
+                let flexBoxDiv = document.createElement("div");
+                flexBoxDiv.classList.add("popUpButtonDiv");
+
+                popUpContainer.insertAdjacentElement("beforeend",flexBoxDiv);
+
+                // popupContainer = flexBoxDiv
 
                 generateGraphButton = document.createElement("button")
                 generateGraphButton.classList.add("searchConfirmationButton")
+                generateGraphButton.classList.add("popUpButton")
+                generateGraphButton.textContent = "Back";
+                generateGraphButton.type = "button";
+                //generateGraphButton.setAttribute("type","button")
+                flexBoxDiv.insertAdjacentElement("beforeend", generateGraphButton)
+
+                generateGraphButton.addEventListener("click", function(){
+                    let popUp = document.getElementById("saveGraphPopUp");
+                    popUp.style.visibility = "hidden";
+
+                    let body = document.getElementById("body")
+                    body.style.cssText = "";
+
+                });
+                
+                generateGraphButton = document.createElement("button")
+                generateGraphButton.classList.add("searchConfirmationButton")
+                generateGraphButton.classList.add("popUpButton")
                 generateGraphButton.textContent = "Confirm";
-                popUpContainer.insertAdjacentElement("beforeend", generateGraphButton)
+                flexBoxDiv.insertAdjacentElement("beforeend", generateGraphButton)
            </script>
         <?php }
 
