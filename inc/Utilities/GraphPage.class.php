@@ -95,12 +95,26 @@ class GraphPage {
         <script type="Text/JavaScript">
             var gm = new GraphManager(<?php echo json_encode($id);?>);
         </script>
-        <div id="wtf"></div>
+        <!-- <div id="wtf"></div> -->
         
-        <div class="graphManager" id="<?php echo $id; ?>">what</div> 
-        <div id="<?php echo $test; ?>">lol</div>
-        <div id="lol">lol</div>
+        <div class="graphManager" id="<?php echo $id; ?>"></div> 
+        <!-- <div id="<?php echo $test; ?>">lol</div> -->
+        <!-- <div id="lol">lol</div> -->
         <!-- <div id="orange" class="graphManager"></div> -->
+    <?php }
+
+    function setParentDiv($name){?>
+        
+        <script type="Text/Javascript">
+           var id = gm.getGraphManagerID();
+            let gmContainer = document.getElementById(id);
+            let newParent = document.getElementById(<?php echo json_encode($name)?>)
+            console.log(gmContainer)
+            console.log(newParent);
+            console.log("NEW PARENT IS ABOVE")
+            newParent.insertAdjacentElement("afterbegin",gmContainer);
+        </script>
+
     <?php }
     function showGraph() { ?>
 

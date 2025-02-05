@@ -520,7 +520,9 @@ class Graph {
         canvas.textAlign = "left";
         canvas.fillStyle = "black"
         // canvas.fillText(this.tempData[i][0]['stockID'], (legendXBox +( boxWidth *2)),height + boxWidth -5);
+        console.log("DISPLAY LEGEND")
         console.log(this.stockIDs);
+        
         canvas.fillText(this.stockIDs[i], (legendXBox +( boxWidth *2)),height + boxWidth -5);
         canvas.stroke();
         canvas.closePath()
@@ -535,9 +537,13 @@ class Graph {
     displayData(canvas){
         console.log("DISPLAY DATA TEMPDATA");
         console.log(this.tempData)
-
-        
-
+        let pathArray = new Array()
+        let highestY = new Array();
+        for(let q = 0; q < this.tempData.length; q++){
+            pathArray[q] = new Path2D();
+            highestY[q] = 2000000;
+        }
+        // canvas.beginPath()
         for(let i = 0; i < this.tempTimeline.length; i++){
            
             //Draw Data
@@ -561,25 +567,35 @@ class Graph {
                     // console.log(this.actualHeight);
                     // console.log(this.coordYTop);
                     let ycoord = ((1 - value)* this.actualHeight) + this.coordYTop;
-
+                    if(ycoord < highestY[x]){
+                        highestY[x] = ycoord;
+                    }
                     //subtract 1 from temp timeline because it is zero based
                     let xcoord = ((i) / (this.tempTimeline.length - 1) * this.actualWidth) + this.coordXLeft;
                      
-                canvas.beginPath()
+                // canvas.beginPath()
                 if(this.previousYCoord[x] == undefined && this.previousXCoord[x] == undefined){
-                    canvas.moveTo(xcoord, ycoord);
+                    pathArray[x].moveTo(this.coordXLeft, this.coordYBottom);
+                    pathArray[x].lineTo(xcoord, ycoord);
+                    console.log(this.previousYCoord[x]);
+                    // debugger;
+                   
+                    // canvas.moveTo(xcoord, ycoord);
+                    // pathArray[x].moveTo(xcoord, ycoord);
                     // console.log(xcoord + " " +ycoord)
                 } else {
-                    canvas.moveTo(this.previousXCoord[x],this.previousYCoord[x]);
+                    // canvas.moveTo(this.previousXCoord[x],this.previousYCoord[x]);
+                    // pathArray[x].moveTo(this.previousXCoord[x],this.previousYCoord[x]);
                     // console.log(xcoord + " " +ycoord)
                 }
                     
                    this.previousYCoord[x] = ycoord;
                    this.previousXCoord[x] = xcoord;
-                   canvas.strokeStyle = this.colours[x]
-                   canvas.lineTo(xcoord,ycoord);
-                   canvas.stroke()
+                   //canvas.strokeStyle = this.colours[x]
+                   //canvas.lineTo(xcoord,ycoord);
+                   //canvas.stroke()
                    
+                   pathArray[x].lineTo(xcoord,ycoord)
                     this.tempDataCursors[x] = this.tempDataCursors[x] + 1;
                     // console.log(this.tempDataCursors);
                 } else {
@@ -592,6 +608,64 @@ class Graph {
 
             
        }
+
+       for(let q = 0; q < this.tempData.length; q++){
+        canvas.strokeStyle= this.colours[q]
+        //const gradient = canvas.createLinearGradient(0,0,this.canvas.height, this.canvas.width)
+        //const gradient = canvas.createLinearGradient(this.coordXLeft,this.coordYTop,this.coordXLeft, this.coordYBottom)
+        const gradient = canvas.createLinearGradient(this.coordXLeft,highestY[q],this.coordXLeft, this.coordYBottom)
+        //gradient.addColorStop(0, "white");
+        // gradient.addColorStop(0, this.colours[q]);
+        
+        gradient.addColorStop(0, this.colours[q]);
+        
+        //gradient.addColorStop(0, "rgb(0 0 0 / 100%)");
+        //gradient.addColorStop(1, "rgb(0 0 0 / 50%)");
+
+        gradient.addColorStop(1, "#014d28");
+        // gradient.addColorStop(1, this.colours[q]);
+
+        // gradient.addColorStop(0, this.colours[q]);
+        // gradient.addColorStop(0.2, this.colours[q]);
+        // gradient.addColorStop(0.5, "rgb(0 0 0 / 0%)");
+        // gradient.addColorStop(1, "rgb(0 0 0 / 100%)");
+        // gradient.addColorStop(0.3, this.colours[q]);
+
+
+
+        // gradient.addColorStop(0.5, "green");
+        // gradient.addColorStop(1, "#fff");
+        // gradient.addColorStop(0.5, "white");
+        // gradient.addColorStop(0.5, "black");
+        // gradient.addColorStop(1, "white");
+        // canvas.globalAlpha = 0.5;
+        // gradient.addColorStop(0.7, "#95aba0");
+        canvas.fillStyle = gradient
+        canvas.strokeStyle = gradient
+        // canvas.rotate((90 * Math.PI) / 180);
+        //pathArray[q].beginPath();
+        canvas.lineWidth = 4;
+        canvas.stroke(pathArray[q])
+        
+        // canvas.lineJoin = "round"
+        // canvas.beginPath();
+        canvas.strokeStyle = "#95aba0";
+        // pathArray[q].moveTo(this.coordXRight,this.coordYBottom);
+        
+        pathArray[q].lineTo(this.coordXRight,this.coordYBottom);
+        pathArray[q].lineTo(this.coordXLeft,this.coordYBottom);
+        // canvas.fill(pathArray[q])
+        console.log(pathArray[q]);
+        // canvas.stroke(pathArray[q])
+       
+        canvas.beginPath()
+        canvas.moveTo(this.coordXLeft,this.coordYBottom)
+        // canvas.lineTo()
+        // debugger;
+        
+    }
+
+
     }
 
     displayAxis(canvas){
@@ -633,6 +707,7 @@ class Graph {
                  let number = parseInt(0.35   * this.bottomOffset);
                  let font = number.toString()+"px serif"
                  canvas.font = font;
+                 canvas.fillStyle ="black";
                  canvas.fillText(labels[n]['displayText'],labelX,labelYText)
                  
                  
@@ -1214,6 +1289,9 @@ class Graph {
             
         }
         var canvasParent = canvas.parentNode;
+        console.log("CANVAS STUFF")
+        console.log(canvas.width);
+        console.log(canvasParent.width);
         console.log(canvas);
         console.log(canvasParent);
         let styles = getComputedStyle(canvasParent);
@@ -1221,6 +1299,7 @@ class Graph {
             let height = parseInt(styles.getPropertyValue("height"), 10);
 
         canvas.width = width;
+        console.log(canvas.width);
         canvas.height = width/2.66
         canvasParent.setAttribute("style","height:"+canvas.height+"px");
         
@@ -1235,6 +1314,11 @@ class Graph {
         cview.fillRect(0,0,100,100);
         //this.canvasContainer.height = this.canvasHeight;
         this.canvasContainer.style.height = canvas.height;
+        canvas.width = this.canvasContainer.offsetWidth;
+        console.log("OFFSET CONTAINER WIDTH"+ this.canvasContainer.offsetWidth);
+        
+        console.log("this canvasContainer width: "+ this.canvasContainer.width)
+        // debugger;
 
         this.setMarginsLRTBS(0.1,0.2,0.1,0.1,"percentile");
         // var start = "2015-04-01";
@@ -1292,9 +1376,44 @@ class Graph {
 
         }
         
+        if(type == "trade"){
+            this.setMarginsLRTBS(0.05,0.2,0.1,0.1,"percentile");
+            
+            // debugger;
+            this.colours=["#00733b","#00733b"]
+            this.initializeDisplay()
+            this.fillCanvas();
+            this.extraDataDisplaySettings()
+            this.displayLegend(canvas)
+            this.displayData(canvas)
+            this.displayAxis(canvas)
+            this.displayXLabels(canvas)
+            this.displayYLabels(canvas)
+            //this.setMarginsLRTBS()
+            
+        }
        
 
 
+    }
+
+    extraDataDisplaySettings(){
+        let editCanvas = this.canvas.getContext("2d")
+        editCanvas.lineJoin = "square";
+        editCanvas.lineWidth = 2;
+        // editCanvas.miterLimit = 5;
+    }
+
+    fillCanvas(){
+        let editCanvas = this.canvas.getContext("2d")
+        // editCanvas.fillStyle="#95aba0";
+        //editCanvas.fillStyle="#15294a";
+        editCanvas.fillStyle="white";
+        
+        // editCanvas.fillStyle="black";
+        editCanvas.fillRect(0, 0, this.canvas.width, this.canvas.height)
+        console.log("CANVAS");
+        console.log(this.canvas);
     }
 
     

@@ -545,8 +545,24 @@ class PageFunctionality {
                     // = document.getElementById("popUpForm")
                     body.insertAdjacentElement('afterend',pop)
                     pop.style.visibility = "visible"
-
                     body.style.cssText = `mask-image: linear-gradient(black, transparent);`
+                    let graph = gm.getLastGraph();
+
+                    let startDate = graph.getDateFromIndex(graph.startSlider.value)
+                    let endDate = graph.getDateFromIndex(graph.endSlider.value)
+
+                    let hiddenStart = document.getElementById("saveGraphStartDate")
+                    let hiddenEnd = document.getElementById("saveGraphEndDate")
+                    // console.log("HIDDEN END");
+                    // console.log(hiddenEnd);
+
+                    hiddenStart.value = startDate
+                    hiddenEnd.value = endDate
+
+                    console.log(graph);
+                    // alert("wtf");
+                    // debugger;
+                   
 
                 });
                 searchConfirmation.insertAdjacentElement("beforeend", generateGraphButton)
@@ -603,7 +619,7 @@ class PageFunctionality {
         <div class="divider"></div>
         <?php }
 
-        static function quickGraphHistory($historyLines){ ?>
+        static function quickGraphHistory($historyLines, $savedHistoryLines){ ?>
         <div class="divider"></div>
         <div class="quickGraphHistoryContainer">
 
@@ -635,15 +651,33 @@ class PageFunctionality {
         </div>
         <div class="flexQuickGraphHistory">
         <p class="quickSubTitle flexRecentSearch">Saved Graphs</p>
-        <div class="flexQuickGraphHistoryItem">
+        <?php
+
+        foreach($savedHistoryLines as $graphItem){
+            // $formattedLine = $graphItem->getGraphTickers();
+            // $formattedLine = trim($formattedLine, "[]");
+            // $formattedLine = str_replace('"', "", $formattedLine);
+            // $formattedLine = str_replace(",", "   ", $formattedLine);
+
+            $urlStart = $_SERVER['PHP_SELF'];
+            $urlEnd = '?generateGraph=True&graphParams='.$graphItem->getGraphTickers();
+            $url = $urlStart . $urlEnd;
+            echo '<div class="flexQuickGraphHistoryItem">';
+            echo "<a class=".'"quickGraphHistoryLink"'." href='".$url."'>";
+            echo $graphItem->getGraphName();
+            echo '</a></div>';
+        }
+
+        ?>
+        <!-- <div class="flexQuickGraphHistoryItem">
             <a class="quickGraphHistoryLink" href='".$url."'>TECH STOCKS</a>
-        </div>
-        <div class="flexQuickGraphHistoryItem">
+        </div> -->
+        <!-- <div class="flexQuickGraphHistoryItem">
             <a class="quickGraphHistoryLink" href='".$url."'>TELECOM</a>
-        </div>
-        <div class="flexQuickGraphHistoryItem">
+        </div> -->
+        <!-- <div class="flexQuickGraphHistoryItem">
             <a class="quickGraphHistoryLink" href='".$url."'>OIL AND GAS</a>
-        </div>
+        </div> -->
         </div>
         </div> 
             
@@ -847,7 +881,7 @@ class PageFunctionality {
             <div id='result_box'></div>
         <?php }
 
-        static function tradeContent($MG , $stockPrice, $stock) { ?>
+        static function tradeContent($graphPage , $stockPrice, $stock) { ?>
             <script
             src="https://code.jquery.com/jquery-3.7.0.js"
            
@@ -914,7 +948,7 @@ class PageFunctionality {
             </div>
 
             <div class="contentDivider">
-                <div class="leftPane"><?php $MG->displayGraph();?>
+                <div class="leftPane" id="leftPane">
                 </div>
                 <div class="rightPane">
 
@@ -923,12 +957,22 @@ class PageFunctionality {
                 <!-- <p class="ptest">lol</p> -->
                 <form method="POST" action="<?php $host = $_SERVER['HTTP_HOST']; echo "https://$host/mockstock/trade.php";?>">
                 <table class="tradeTable">
-                    <tr>
-                        <td class="columnLeftAlign"><?php echo $stock->getID(); ?></td>
+                    <tr class="tableHeader">
+                        <td class="columnLeftAlign tableHeader"><?php echo $stock->getID(); ?></td>
                         <td></td>
-                        <td class="columnLeftAlign">Account</td>
+                        <td class="columnLeftAlign tableHeader">Account</td>
                         <td></td>
                     </tr>
+                    <tr class="columnAlign">
+                        <td class="columnLeftAlign">Order Type</td>
+                        <!-- <input type="textbox" placeholder="Amount"> -->
+                        <td class="columnRightAlign"><select class="orderTableSelectBox"><option value="buy">Buy</option>
+  <option value="sell">Sell</option></select></td>
+                        <td></td>
+                        <td><input name="stockID" type="hidden" value="<?php echo $stock->getID(); ?>"></td>
+                        
+                    </tr>
+
                     <tr class="columnAlign">
                         <td class="columnLeftAlign">Quantity</td>
                         <!-- <input type="textbox" placeholder="Amount"> -->

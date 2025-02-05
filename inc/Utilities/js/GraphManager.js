@@ -46,4 +46,8 @@ class GraphManager {
             i += 1;
         }
     }
+
+    getGraphManagerID(){
+        return this.id
+    }
 }

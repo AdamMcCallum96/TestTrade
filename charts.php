@@ -4,6 +4,7 @@ require_once("inc/config.inc.php");
 require_once("inc/Utilities/PageFunctionality.class.php");
 require_once("inc/Utilities/PDOConnection.class.php");
 
+require_once("inc/Entities/StockGraphs.class.php");
 require_once("inc/Utilities/StockGraphsDAO.php");
 require_once("inc/Utilities/StockGraphsTickersDAO.php");
 require_once("inc/Utilities/StockAPIManager.class.php");
@@ -78,6 +79,34 @@ PageFunctionality::tradeSearchResult();
 
 if(isset($_POST['stocks'])){
     var_dump($_POST);
+
+    //$previousGraphID = StockGraphsDAO::getCount($_SESSION['user']);
+    
+    $result = StockGraphsDAO::selectStockGraphsFromUser($username);
+
+    //$result = 0;
+    if($result == 0){
+        $numberOfGraphs = 0;
+    } else {
+        $numberOfGraphs = count($result);
+    }
+    
+    var_dump($numberOfGraphs);
+
+    $numberOfGraphs += 1;
+    var_dump("PREVIOUS GRAPH ID: ". $previousGraphID);
+    $stockGraph = new StockGraphs();
+    $stockGraph->setUser_id($username);
+    $stockGraph->setGraphID($numberOfGraphs);
+    $stockGraph->setGraphTickers($_POST['stocks']);
+    $stockGraph->setGraphName($_POST['graphName']);
+    $stockGraph->setGraphType("default");
+    $stockGraph->setGraphCustomTime("default");
+    $stockGraph->setGraphStartDate($_POST['startDate']);
+    $stockGraph->setGraphEndDate($_POST['endDate']);
+    StockGraphsDAO::createStockGraphs($stockGraph);
+
+
 }
 
 
@@ -151,9 +180,9 @@ if(isset($_GET['graphParams'])){
 $user = $_SESSION['user'];
        
         $result = QuickGraphHistoryDAO::getRecent($user);
-        
+        $result2 = StockGraphsDAO::getRecent($user);
         // var_dump($result);
-        PageFunctionality::quickGraphHistory($result);
+        PageFunctionality::quickGraphHistory($result, $result2);
 
 
 

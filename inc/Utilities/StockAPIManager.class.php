@@ -62,8 +62,8 @@ class StockAPIManager {
         //$fileLog = fopen("../Logs/errorlog.txt","w");
         $fileLog = fopen("inc/Logs/errorlog.txt","w");
         $endTime = microtime(true);
-        var_dump("IN FUNCTION TIME1");
-        var_dump($endTime - $startTime);
+        // var_dump("IN FUNCTION TIME1");
+        // var_dump($endTime - $startTime);
         $startTime = microtime(true);
         
         /**localtime greater than stock close time**/
@@ -105,8 +105,8 @@ class StockAPIManager {
                 $value = $yData;
                 //$test = true;
                 $endTime = microtime(true);
-                var_dump("IN FUNCTION TIME2");
-                var_dump($endTime - $startTime);
+                // var_dump("IN FUNCTION TIME2");
+                // var_dump($endTime - $startTime);
                 
                 if($test == true){
                     StockDailyDAO::createAllStockDaily($date, $value, $stockID);

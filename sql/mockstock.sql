@@ -179,8 +179,9 @@ CREATE TABLE StockFavourties (
 
 
 CREATE TABLE StockGraphs (
-    user_id INT NOT NULL,
+    user_id varchar(40),
     graphID INT NOT NULL,
+    graphTickers varchar(128) NOT NULL,
     graphName varchar(30) NOT NULL,
     graphType varchar(10) NOT NULL,
     graphCustomTime bit NOT NULL,
