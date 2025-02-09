@@ -942,9 +942,12 @@ class PageFunctionality {
             
             
             <div class="contentHeader">
-                <div class="contentHeaderItem"><?php echo $stock->getStockName();?></div>
+                <!-- <div class="contentHeaderItem"><?php// echo $stock->getStockName();?></div>
                 <div class="contentHeaderItem">|</div>
-                <div class="contentHeaderItem"><?php echo $stock->getID(); ?></div>
+                <div class="contentHeaderItem"><?php //echo $stock->getID(); ?></div> -->
+                <div class="contentHeaderItem">Trade History</div>
+                <div class="contentHeaderItem">Stock Details</div>
+                <div class="contentHeaderItem">Stock Order</div>
             </div>
 
             <div class="contentDivider">
@@ -956,61 +959,65 @@ class PageFunctionality {
                 
                 <!-- <p class="ptest">lol</p> -->
                 <form method="POST" action="<?php $host = $_SERVER['HTTP_HOST']; echo "https://$host/mockstock/trade.php";?>">
-                <table class="tradeTable">
+                    <input name="stockID" type="hidden" value="<?php echo $stock->getID(); ?>">
+                    <table class="tradeTable">
                     <tr class="tableHeader">
                         <td class="columnLeftAlign tableHeader"><?php echo $stock->getID(); ?></td>
                         <td></td>
-                        <td class="columnLeftAlign tableHeader">Account</td>
+                        <td class="columnLeftAlign tableHeader">Order</td>
                         <td></td>
                     </tr>
                     <tr class="columnAlign">
-                        <td class="columnLeftAlign">Order Type</td>
+                    <td class="columnLeftAlign">Share Price</td>
+                    <td id="stockPrice" class="columnRightAlign columnCenter" value="<?php echo $stockPrice;?>">$<?php echo $stockPrice;?></td>
+  <td class="columnLeftAlign">Action</td>
                         <!-- <input type="textbox" placeholder="Amount"> -->
-                        <td class="columnRightAlign"><select class="orderTableSelectBox"><option value="buy">Buy</option>
-  <option value="sell">Sell</option></select></td>
-                        <td></td>
-                        <td><input name="stockID" type="hidden" value="<?php echo $stock->getID(); ?>"></td>
+                        <td class="columnRightAlign orderTableBox columnCenter"><select class="orderTableSelectBox orderTableBox"><option class="tradeOrderOption" value="buy">Buy</option>
+  <option class="tradeOrderOption" value="sell">Sell</option>
+  <option class="tradeOrderOption" value="test">test</option></select></td>
                         
                     </tr>
 
                     <tr class="columnAlign">
                         <td class="columnLeftAlign">Quantity</td>
                         <!-- <input type="textbox" placeholder="Amount"> -->
-                        <td><input name="stockQuantity" class="stockQuantity" type="textbox"></td>
-                        <td></td>
-                        <td><input name="stockID" type="hidden" value="<?php echo $stock->getID(); ?>"></td>
+                        <td class="columnRightAlign columnCenter"><input name="stockQuantity" class="stockQuantity orderTableBox" type="textbox"></td>
+                        <td class="columnLeftAlign">Type</td>
+                        <td class="columnRightAlign"><select class="orderTableSelectBox orderTableBox"><option class="tradeOrderOption" value="market">Market</option>
+  
+  <option class="tradeOrderOption" value="limit">Limit</option></select></td>
                         
                     </tr>
-                    <tr>
-                        <td class="columnLeftAlign">Share Price</td>
-                        <td id="stockPrice" class="columnRightAlign " value="<?php echo $stockPrice;?>">$<?php echo $stockPrice;?></td>
-                        <td></td>
+                    <tr class="tableHeader">
+                        <td class="columnLeftAlign">Order Summary</td>
+                        <td id="stockPrice" class="columnRightAlign columnCenter" value="<?php echo $stockPrice;?>">$<?php echo $stockPrice;?></td>
+                        <td class="columnLeftAlign">Account Info</td>
                         <td></td>
                     </tr>
 
                     <tr>
                         <td class="columnLeftAlign">Subtotal</td>
-                        <td class="columnRightAlign subTotal">0</td>
+                        <td class="columnRightAlign columnCenter subTotal">0</td>
                         <td class="columnLeftAlign">Available Funds</td>
                         <td class="columnRightAlign currentBalance" value="25000.00">$25000.00</td>
                     </tr>
                     <tr>
                         <td class="columnLeftAlign">Brockerage Fee</td>
-                        <td class="columnRightAlign brockerageFee">0</td>
+                        <td class="columnRightAlign columnCenter brockerageFee">0</td>
                         <td></td>
                         <td class="columnRightAlign balanceFee">0</td>
                     </tr>
                     <tr>
                         <td class="columnLeftAlign">Total</td>
-                        <td class="columnRightAlign total">0</td>
+                        <td class="columnRightAlign columnCenter total">0</td>
                         <td class="columnLeftAlign">Future Balance</td>
                         <td class="columnRightAlign futureBalance">$25000.00</td>
                     </tr>
-                    <tr>
+                    <tr class="tableHeader">
+                    <td class="columnLeftAlign"><input class="tradeButton graphDateButton" type="submit" value="Stock Info"></td>
+                        <td class="columnRightAlign columnCenter"><input class="tradeButton graphDateButton" type="submit" value="Complete Order"></td>
                         <td class="columnLeftAlign"></td>
-                        <td class="columnRightAlign"><input type="submit" value="confirm"></td>
-                        <td class="columnLeftAlign"></td>
-                        <td class="columnRightAlign balanceText">Manage Balance</td>
+                        <td class="columnRightAlign"><input class="tradeButton graphDateButton" type="submit" value="Manage Balance"></td>
                     </tr>
 
                 
