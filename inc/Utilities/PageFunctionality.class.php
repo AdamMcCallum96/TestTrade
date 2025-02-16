@@ -945,20 +945,181 @@ class PageFunctionality {
                 <!-- <div class="contentHeaderItem"><?php// echo $stock->getStockName();?></div>
                 <div class="contentHeaderItem">|</div>
                 <div class="contentHeaderItem"><?php //echo $stock->getID(); ?></div> -->
-                <div class="contentHeaderItem">Trade History</div>
+                <!-- <div class="contentHeaderItem">Trade History</div>
                 <div class="contentHeaderItem">Stock Details</div>
-                <div class="contentHeaderItem">Stock Order</div>
+                <div class="contentHeaderItem">Stock Order</div> -->
+
+                <div id="btnTradeHistory" class="contentHeaderItem">Trade History</div>
+                <div id="btnStockDetails" class="contentHeaderItem">Stock Details</div>
+                <div id="btnStockOrder" class="contentHeaderItem">Stock Order</div>
             </div>
 
-            <div class="contentDivider">
-                <div class="leftPane" id="leftPane">
-                </div>
-                <div class="rightPane">
+            <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                let buttonHistory = document.getElementById("btnTradeHistory");
+                let buttonDetails = document.getElementById("btnStockDetails");
+                let buttonOrder = document.getElementById("btnStockOrder");
 
+                let contentGraph = document.getElementById("tradeGraph");
+                let contentOrder = document.getElementById("tradeOrder")
+                let contentDetails = document.getElementById("stockDetails")
+                let contentSHistory = document.getElementById("tradeSpecificHistory")
+                let contentGHistory = document.getElementById("tradeGeneralHistory")
+                let paneDivider = document.getElementById("cdiv")
+
+                debugger;
+                buttonHistory.addEventListener('click', function(){
+                    contentSHistory.style.display = "block";
+                    contentGHistory.style.display = "block";
+                    
+                    contentGraph.style.display = "none";
+                    contentOrder.style.display = "none";
+                    contentDetails.style.display = "none";
+                    paneDivider.style.gridTemplateColumns = "1fr 1fr";
+                });
+
+                buttonDetails.addEventListener('click', function(){
+                    paneDivider.style.gridTemplateColumns = "3fr 2fr";
+                    contentGraph.style.display = "block";
+                    contentDetails.style.display = "block";
+                    
+                    contentOrder.style.display = "none";
+                    
+                    contentSHistory.style.display = "none";
+                    contentGHistory.style.display = "none";
+                    
+
+                });
+
+                buttonOrder.addEventListener('click', function(){
+                    paneDivider.style.gridTemplateColumns = "3fr 2fr";
+                    contentGraph.style.display = "block";
+                    contentOrder.style.display = "block";
+
+                    contentSHistory.style.display = "none";
+                    contentGHistory.style.display = "none";
+                    contentDetails.style.display = "none";
+                    
+                });
+            }, false);
+            </script>
+
+            <div class="contentDivider" id="cdiv">
+                <div class="leftPane" id="leftPane">
+                    <div id="tradeGeneralHistory">
+                    <table class="tradeTable">
+                    <tr class="tableHeader">
+                        <td class="columnLeftAlign tableHeader">General History</td>
+                        <td></td>
+                        <td class="columnRightAlign tableHeader">Date</td>
+                        <td class="columnRightAlign tableHeader">Action</td>
+                        <td class="columnRightAlign tableHeader">Quantity</td>
+                        <td class="columnRightAlign tableHeader">Share Price</td>
+                        <td class="columnRightAlign tableHeader">Total Price</td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="columnLeftAlign">Cineplex</td>
+                        <td></td>
+                        <td class="columnRightAlign">Feb-02-2024</td>
+                        <td class="columnRightAlign">Bought</td>
+                        <td class="columnRightAlign">100</td>
+                        <td class="columnRightAlign">12.50</td>
+                        <td class="columnRightAlign">12,500</td>
+                    </tr>
+                    </table>
+                    </div>
+                </div>
+                    
+                <div class="rightPane">
+                    <div id="tradeSpecificHistory">
+                    <!-- <table class="tradeTable notBottomTable">
+                    <tr class="tableHeader">
+                        <td class="columnLeftAlign tableHeader">Stock Summary</td>
+                        <td></td>
+                        <td class="columnRightAlign tableHeader">Avg Buy</td>
+                        <td class="columnRightAlign tableHeader">Avg Sell</td>
+                        <td class="columnRightAlign tableHeader">% Dif</td>
+                        
+                        
+                    </tr>
+                    <tr>
+                        <td class="columnLeftAlign">Cineplex</td>
+                        <td></td>
+                        <td class="columnRightAlign">12.25</td>
+                        <td class="columnRightAlign">15.13</td>
+                        <td class="columnRightAlign"></td>
+                       
+                    </tr>
+        </table> -->
+        <table class="tradeTable">
+                    <tr class="tableHeader">
+                    <td class="columnLeftAlign tableHeader">Stock History</td>
+                        <td class="columnRightAlign tableHeader">Date</td>
+                        <td class="columnRightAlign tableHeader">Action</td>
+                        <td class="columnRightAlign tableHeader">Quantity</td>
+                        <td class="columnRightAlign tableHeader">Share Price</td>
+                        <td class="columnRightAlign tableHeader">Total Price</td> 
+                    </tr>
+
+                    <tr>
+                    <td class="columnLeftAlign">CGX.TRT</td>
+                        <td class="columnRightAlign">Feb-02-2024</td>
+                        <td class="columnRightAlign">Bought</td>
+                        <td class="columnRightAlign">100</td>
+                        <td class="columnRightAlign">12.50</td>
+                        <td class="columnRightAlign">12,500</td>
+
+
+                    </tr>
+                    <td class="columnLeftAlign">CGX.TRT</td>
+                        <td class="columnRightAlign">Feb-02-2024</td>
+                        <td class="columnRightAlign">Bought</td>
+                        <td class="columnRightAlign">100</td>
+                        <td class="columnRightAlign">12.50</td>
+                        <td class="columnRightAlign">12,500</td>
+
+
+                    </tr>
+                    <td class="columnLeftAlign">CGX.TRT</td>
+                        <td class="columnRightAlign">Feb-02-2024</td>
+                        <td class="columnRightAlign">Bought</td>
+                        <td class="columnRightAlign">100</td>
+                        <td class="columnRightAlign">12.50</td>
+                        <td class="columnRightAlign">12,500</td>
+
+
+                    </tr>
+                    
+                    </table>
+
+                    </div>
+                    <div id="stockDetails">
+                    <table class="tradeTable notBottomTable">
+                    <tr class="tableHeader">
+                        <td class="columnLeftAlign tableHeader">Your Summary</td>
+                        <td></td>
+                        <td class="columnRightAlign tableHeader">Avg Buy</td>
+                        <td class="columnRightAlign tableHeader">Avg Sell</td>
+                        <td class="columnRightAlign tableHeader">% Dif</td>
+                        
+                        
+                    </tr>
+                    <tr>
+                        <td class="columnLeftAlign">Cineplex</td>
+                        <td></td>
+                        <td class="columnRightAlign">12.25</td>
+                        <td class="columnRightAlign">15.13</td>
+                        <td class="columnRightAlign"></td>
+                        <!-- <td class="columnRightAlign">12.50</td>
+                        <td class="columnRightAlign">12,500</td> -->
+                    </tr>
+        </table>
+                    </div>
 
                 
                 <!-- <p class="ptest">lol</p> -->
-                <form method="POST" action="<?php $host = $_SERVER['HTTP_HOST']; echo "https://$host/mockstock/trade.php";?>">
+                <form id="tradeOrder" method="POST" action="<?php $host = $_SERVER['HTTP_HOST']; echo "https://$host/mockstock/trade.php";?>">
                     <input name="stockID" type="hidden" value="<?php echo $stock->getID(); ?>">
                     <table class="tradeTable">
                     <tr class="tableHeader">

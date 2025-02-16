@@ -251,6 +251,53 @@ static function createUserStock(UserStock $class){
 }
 ?>
 <?php
+Class OrderDAO {
+	private static $database;
+
+    static function initialize() {
+        self::$database = new PDOConnection('Order');
+    }	
+static function createOrder(Order $class){
+		$sql = 'INSERT INTO Order (ID, stockID, userID, currencyCode, totalQProposed, totalQFilled, orderStatus, tradeAction, tradeType, tradePeriod, placedTime)
+	VALUES (:ID, :stockID, :userID, :currencyCode, :totalQProposed, :totalQFilled, :orderStatus, :tradeAction, :tradeType, :tradePeriod, :placedTime)';
+		self::$database->query($sql);
+		self::$database->bind(':ID', $class->getID());
+		self::$database->bind(':stockID', $class->getStockID());
+		self::$database->bind(':userID', $class->getUserID());
+		self::$database->bind(':currencyCode', $class->getCurrencyCode());
+		self::$database->bind(':totalQProposed', $class->getTotalQProposed());
+		self::$database->bind(':totalQFilled', $class->getTotalQFilled());
+		self::$database->bind(':orderStatus', $class->getOrderStatus());
+		self::$database->bind(':tradeAction', $class->getTradeAction());
+		self::$database->bind(':tradeType', $class->getTradeType());
+		self::$database->bind(':tradePeriod', $class->getTradePeriod());
+		self::$database->bind(':placedTime', $class->getPlacedTime());
+		self::$database->execute();
+	}
+}
+?>
+<?php
+Class OrderFilledDAO {
+	private static $database;
+
+    static function initialize() {
+        self::$database = new PDOConnection('OrderFilled');
+    }	
+static function createOrderFilled(OrderFilled $class){
+		$sql = 'INSERT INTO OrderFilled (fillID, stockOrderID, quantityFilled, sharePrice, totalPrice, fillTime)
+	VALUES (:fillID, :stockOrderID, :quantityFilled, :sharePrice, :totalPrice, :fillTime)';
+		self::$database->query($sql);
+		self::$database->bind(':fillID', $class->getFillID());
+		self::$database->bind(':stockOrderID', $class->getStockOrderID());
+		self::$database->bind(':quantityFilled', $class->getQuantityFilled());
+		self::$database->bind(':sharePrice', $class->getSharePrice());
+		self::$database->bind(':totalPrice', $class->getTotalPrice());
+		self::$database->bind(':fillTime', $class->getFillTime());
+		self::$database->execute();
+	}
+}
+?>
+<?php
 Class StockDailyDAO {
 	private static $database;
 
@@ -311,11 +358,12 @@ Class StockGraphsDAO {
         self::$database = new PDOConnection('StockGraphs');
     }	
 static function createStockGraphs(StockGraphs $class){
-		$sql = 'INSERT INTO StockGraphs (user_id, graphID, graphName, graphType, graphCustomTime, graphStartDate, graphEndDate)
-	VALUES (:user_id, :graphID, :graphName, :graphType, :graphCustomTime, :graphStartDate, :graphEndDate)';
+		$sql = 'INSERT INTO StockGraphs (user_id, graphID, graphTickers, graphName, graphType, graphCustomTime, graphStartDate, graphEndDate)
+	VALUES (:user_id, :graphID, :graphTickers, :graphName, :graphType, :graphCustomTime, :graphStartDate, :graphEndDate)';
 		self::$database->query($sql);
 		self::$database->bind(':user_id', $class->getUser_id());
 		self::$database->bind(':graphID', $class->getGraphID());
+		self::$database->bind(':graphTickers', $class->getGraphTickers());
 		self::$database->bind(':graphName', $class->getGraphName());
 		self::$database->bind(':graphType', $class->getGraphType());
 		self::$database->bind(':graphCustomTime', $class->getGraphCustomTime());

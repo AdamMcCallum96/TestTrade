@@ -452,6 +452,11 @@ body{
 tbody {
     width: 100%;
 }
+
+.tradeSpecificHistory {
+    background-color:rgb(0, 0, 0, 0.0); 
+}
+
 .tradeTable {
     font-size: 15px;
     border-collapse: collapse;
@@ -460,7 +465,12 @@ tbody {
     /* margin: 10px 0; */
     /* background-color: rgb(119, 154, 200); */
     display: table;
+    background-color: white;
    
+}
+
+.notBottomTable{
+    margin-bottom: 20px;
 }
 .balanceText {
     text-decoration: underline;
@@ -480,6 +490,10 @@ tbody {
     height: 70px;
     background-color:rgb(58, 58, 59);
     color: white;
+
+    font-size: 15px;
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight: 600;
 }
 
 .columnAlign {
@@ -600,6 +614,10 @@ option:hover {
     text-align: right;
     background-color: rgb(190, 190, 190);
 }
+
+#cdiv {
+
+}
 .contentDivider {
     display: grid;
     grid-template-columns: 3fr 2fr;
@@ -618,7 +636,8 @@ option:hover {
 .leftPane {
     /* display: inline-block; */
     /* width: 59%; */
-    background-color:royalblue;
+    /* background-color:royalblue; */
+    background-color:rgb(255, 255, 255);
     /* max-width: 60%; */
     /* min-height: 200px; */
     
@@ -633,7 +652,7 @@ option:hover {
     /* width: 39%; */
     /* background-color: rgb(58, 58, 59); */
 
-    background-color: rgb(255, 255, 255);
+    /* background-color: rgb(255, 255, 255); */
     /* background-color:rgb(31, 31, 31); */
     /* max-width: 40%; */
     /* min-height: 200px; */
@@ -687,8 +706,9 @@ table:hover {
     display: block;
     width: 100%;
     background-color: white;
+    /* background-color: #0f4c64ff; */
     margin: 0px;
-    height: 600px;
+    /* height: 600px; */
 }
 
 .summaryMenu {

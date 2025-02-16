@@ -140,6 +140,37 @@ CREATE TABLE UserStock (
     FOREIGN KEY (currencyCode) REFERENCES UserAccountBalance(currencyCode)
 );
 
+CREATE TABLE stockOrders (
+    ID INT NOT NULL AUTO_INCREMENT,
+    stockID varchar(60) NOT NULL,
+    userID varchar(40) NOT NULL,
+    currencyCode varchar(3) NOT NULL,
+    totalQProposed INT NOT NULL,
+    totalQFilled INT NOT NULL,
+    orderStatus varchar(8), /*Expired, Open, Filled */
+    tradeAction varchar(4) NOT NULL, /* buy or sell */
+    tradeType varchar(10) NOT NULL, /* MARKET OR LIMIT*/
+    tradePeriod varchar(3) NOT NULL, /* DAY GIF TIF*/
+    placedTime timestamp NOT NULL,
+
+    PRIMARY KEY (ID, stockID, userID, currencyCode),
+    FOREIGN KEY (stockID) REFERENCES Stock(ID),
+    FOREIGN KEY (userID) REFERENCES User(email),
+    FOREIGN KEY (currencyCode) REFERENCES UserAccountBalance(currencyCode)
+);
+
+CREATE TABLE OrderFilled (
+    fillID INT NOT NULL AUTO_INCREMENT,
+    stockOrderID INT NOT NULL,
+    quantityFilled INT NOT NULL,
+    sharePrice float NOT NULL,
+    totalPrice float NOT NULL,
+    fillTime timestamp NOT NULL,
+
+    PRIMARY KEY (fillID),
+    FOREIGN KEY (stockOrderID) REFERENCES stockOrders(ID)
+);
+
 
 CREATE TABLE StockDaily (
     stockID varchar(60) NOT NULL,
